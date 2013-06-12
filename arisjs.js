@@ -41,9 +41,6 @@ var ARISJS = function()
         this.dequeueRequest();
     }
 
-/*
- * FUNCTION CALLS
- * */
     this.closeMe = function()
     {
         this.enqueueRequest("aris://closeMe");
