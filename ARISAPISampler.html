@@ -1,0 +1,46 @@
+<html>
+<head>
+<script type="text/javascript" src="arisjs.js"></script>
+<script type="text/javascript">
+var ItemId      = 37108;
+var AttributeId = 37110;
+
+ARIS.didUpdateItemQty = function(updatedItemId, qty)
+{
+    if(updatedItemId == ItemId)
+        document.getElementById("itemcount").innerHTML = "You have "+qty+" items";
+    else if(updatedItemId == AttributeId)
+        document.getElementById("attributecount").innerHTML = "You have "+qty+" attributes";
+    ARIS.getItemCounts();
+};
+
+function begin()
+{
+    console.log('hello?');
+    getItemCounts();
+};
+
+function getItemCounts()
+{
+    ARIS.getItemCount(ItemId);
+    ARIS.getItemCount(AttributeId);
+};
+
+function giveItem()
+{
+    ARIS.giveItemCount(ItemId, 1);
+};
+
+function giveAttribute()
+{
+    ARIS.giveItemCount(AttributeId, 1);
+};
+</script>
+</head>
+<body onload="begin()" style="font-size:30;">
+<div id="itemcount">You have items</div>
+<div id="attributecount">You have attributes</div>
+<div onclick="giveItem()" style="">Get Item</div>
+<div onclick="giveAttribute()">Get Attributes</div>
+</body>
+</html>
