@@ -43,6 +43,7 @@ var ARISJS = function()
 
     this.closeMe             = function()                { this.enqueueRequest("aris://closeMe"); }
     this.exitToTab           = function(tab)             { this.enqueueRequest("aris://exitTo/tab/"+tab); }
+    this.exitToScanner       = function(prompt)          { this.enqueueRequest("aris://exitTo/scanner/"+prompt); }
     this.exitToPlaque        = function(plaqueId)        { this.enqueueRequest("aris://exitTo/plaque/"+plaqueId); }
     this.exitToWebpage       = function(webpageId)       { this.enqueueRequest("aris://exitTo/webpage/"+webpageId); }
     this.exitToItem          = function(itemId)          { this.enqueueRequest("aris://exitTo/item/"+itemId); }
