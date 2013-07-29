@@ -106,13 +106,12 @@ var ARISJS = function()
         if (query === url || query === "") return params;
         var nvPairs = query.replace(/\+/g, " ").split("&");
 
-        for (var i=0; i<nvPairs.length; i++) {
+        for(var i=0; i<nvPairs.length; i++)
+        {
             var nv = nvPairs[i].split("=");
             var n  = decodeURIComponent(nv[0]);
             var v  = decodeURIComponent(nv[1]);
-            if ( !(n in params) ) {
-                params[n] = [];
-            }
+            if(!(n in params)) params[n] = [];
             params[n].push(nv.length === 2 ? v : null);
         }
         return params;
@@ -129,6 +128,11 @@ var ARISJS = function()
     this.bumpReceived = function(bumpString)
     {
         alert("Just recieved a successful bump with this information: '"+bumpString+"'. Override ARIS.bumpReceived(bumpString) to handle this event however you want! (Or, just add 'ARIS.bumpReceived = function(bumpString){return;};' to your code to just get rid of this message)");
+    }
+
+    this.hook = function(paramsJSON)
+    {
+        alert("Just recieved a hook from ARIS with this information: '"+paramsJSON+"'. Override ARIS.hook(paramsJSON) to handle this event however you want! (Or, just add 'ARIS.hook = function(paramsJSON){return;};' to your code to just get rid of this message)");
     }
 }
 
