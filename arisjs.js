@@ -1,68 +1,73 @@
-var ARISJS = function()
-{
-    this.requestsQueue = new Array();
-    this.currentlyCalling = false;
+// NOTE-
+// This file is included simply for reference. You 
+// DO NOT need to <script src=""> include this file 
+// in your javascript. ARIS will automatically inject
+// it.
 
-    this.enqueueRequest = function(nextRequest)
+var ARISJS = function(_ARIS)
+{
+    _ARIS.requestsQueue = new Array();
+    _ARIS.currentlyCalling = false;
+
+    _ARIS.enqueueRequest = function(nextRequest)
     {
-        this.requestsQueue.push(nextRequest);
-        if(!this.currentlyCalling) 
+        _ARIS.requestsQueue.push(nextRequest);
+        if(!_ARIS.currentlyCalling) 
         {
-            this.currentlyCalling = true;
-            this.dequeueRequest();
+            _ARIS.currentlyCalling = true;
+            _ARIS.dequeueRequest();
         }
     }
 
-    this.isCurrentlyCalling = function()
+    _ARIS.isCurrentlyCalling = function()
     {
-        this.currentlyCalling = true;
+        _ARIS.currentlyCalling = true;
     }
 
-    this.dequeueRequest = function()
+    _ARIS.dequeueRequest = function()
     {
-        if(this.requestsQueue.length) 
+        if(_ARIS.requestsQueue.length) 
         {
-            var req = this.requestsQueue.shift();
+            var req = _ARIS.requestsQueue.shift();
             window.location = req;
 
             /* DEBUG - uncomment to use in browser without error */
             /*
-            this.isCurrentlyCalling();
+            _ARIS.isCurrentlyCalling();
             if(req == "aris://inventory/get/" + 99999999)
-                this.didUpdateItemQty(99999999,1);
-            this.isNotCurrentlyCalling();
+                _ARIS.didUpdateItemQty(99999999,1);
+            _ARIS.isNotCurrentlyCalling();
             //*/
         }
     }
 
-    this.isNotCurrentlyCalling = function()
+    _ARIS.isNotCurrentlyCalling = function()
     {
-        this.currentlyCalling = false;
-        this.dequeueRequest();
+        _ARIS.currentlyCalling = false;
+        _ARIS.dequeueRequest();
     }
 
-    this.closeMe             = function()                { this.enqueueRequest("aris://closeMe"); }
-    this.exitToTab           = function(tab)             { this.enqueueRequest("aris://exitTo/tab/"+tab); }
-    this.exitToScanner       = function(prompt)          { this.enqueueRequest("aris://exitTo/scanner/"+prompt); }
-    this.exitToPlaque        = function(plaqueId)        { this.enqueueRequest("aris://exitTo/plaque/"+plaqueId); }
-    this.exitToWebpage       = function(webpageId)       { this.enqueueRequest("aris://exitTo/webpage/"+webpageId); }
-    this.exitToItem          = function(itemId)          { this.enqueueRequest("aris://exitTo/item/"+itemId); }
-    this.exitToCharacter     = function(characterId)     { this.enqueueRequest("aris://exitTo/character/"+characterId); }
-    this.exitToPanoramic     = function(panoramicId)     { this.enqueueRequest("aris://exitTo/panoramic/"+panoramicId); }
-    this.prepareMedia        = function(mediaId)         { this.enqueueRequest("aris://media/prepare/" + mediaId); }
-    this.playMedia           = function(mediaId)         { this.enqueueRequest("aris://media/play/" + mediaId); }
-    this.playMediaAndVibrate = function(mediaId)         { this.enqueueRequest("aris://media/playAndVibrate/" + mediaId); }
-    this.stopMedia           = function(mediaId)         { this.enqueueRequest("aris://media/stop/" + mediaId); }
-    this.setMediaVolume      = function(mediaId, volume) { this.enqueueRequest("aris://media/setVolume/" + mediaId + "/" + volume); }
-    this.getItemCount        = function(itemId)          { this.enqueueRequest("aris://inventory/get/" + itemId); }
-    this.setItemCount        = function(itemId,qty)      { this.enqueueRequest("aris://inventory/set/" + itemId + "/" + qty); }
-    this.giveItemCount       = function(itemId,qty)      { this.enqueueRequest("aris://inventory/give/" + itemId + "/" + qty); }
-    this.takeItemCount       = function(itemId,qty)      { this.enqueueRequest("aris://inventory/take/" + itemId + "/" + qty); }
-    this.getPlayerName       = function()                { this.enqueueRequest("aris://player/name"); }
-    this.setBumpString       = function(bString)         { this.enqueueRequest("aris://bump/"+bString); }
+    _ARIS.closeMe             = function()                { _ARIS.enqueueRequest("aris://closeMe"); }
+    _ARIS.hideLeaveButton     = function()                { _ARIS.enqueueRequest("aris://leaveButton/disable"); }
+    _ARIS.exitToTab           = function(tab)             { _ARIS.enqueueRequest("aris://exitTo/tab/"+tab); }
+    _ARIS.exitToScanner       = function(prompt)          { _ARIS.enqueueRequest("aris://exitTo/scanner/"+prompt); }
+    _ARIS.exitToPlaque        = function(plaqueId)        { _ARIS.enqueueRequest("aris://exitTo/plaque/"+plaqueId); }
+    _ARIS.exitToWebpage       = function(webpageId)       { _ARIS.enqueueRequest("aris://exitTo/webpage/"+webpageId); }
+    _ARIS.exitToItem          = function(itemId)          { _ARIS.enqueueRequest("aris://exitTo/item/"+itemId); }
+    _ARIS.exitToCharacter     = function(characterId)     { _ARIS.enqueueRequest("aris://exitTo/character/"+characterId); }
+    _ARIS.prepareMedia        = function(mediaId)         { _ARIS.enqueueRequest("aris://media/prepare/" + mediaId); }
+    _ARIS.playMedia           = function(mediaId)         { _ARIS.enqueueRequest("aris://media/play/" + mediaId); }
+    _ARIS.playMediaAndVibrate = function(mediaId)         { _ARIS.enqueueRequest("aris://media/playAndVibrate/" + mediaId); }
+    _ARIS.stopMedia           = function(mediaId)         { _ARIS.enqueueRequest("aris://media/stop/" + mediaId); }
+    _ARIS.setMediaVolume      = function(mediaId, volume) { _ARIS.enqueueRequest("aris://media/setVolume/" + mediaId + "/" + volume); }
+    _ARIS.getItemCount        = function(itemId)          { _ARIS.enqueueRequest("aris://inventory/get/" + itemId); }
+    _ARIS.setItemCount        = function(itemId,qty)      { _ARIS.enqueueRequest("aris://inventory/set/" + itemId + "/" + qty); }
+    _ARIS.giveItemCount       = function(itemId,qty)      { _ARIS.enqueueRequest("aris://inventory/give/" + itemId + "/" + qty); }
+    _ARIS.takeItemCount       = function(itemId,qty)      { _ARIS.enqueueRequest("aris://inventory/take/" + itemId + "/" + qty); }
+    _ARIS.getPlayer           = function()                { _ARIS.enqueueRequest("aris://player"); } 
 
     //Call ARIS API directly (USE WITH CAUTION)
-    this.callService = function(serviceName, callback, GETparams, POSTparams)
+    _ARIS.callService = function(serviceName, callback, GETparams, POSTparams)
     {
         var ROOT_URL = "http://arisgames.org"
         var url;
@@ -97,7 +102,7 @@ var ARISJS = function()
     }
 
     //Not ARIS related... just kinda useful
-    this.parseURLParams = function(url) 
+    _ARIS.parseURLParams = function(url) 
     {
         var queryStart = url.indexOf("?") + 1;
         var queryEnd   = url.indexOf("#") + 1 || url.length + 1;
@@ -121,20 +126,49 @@ var ARISJS = function()
     /*
      * ARIS CALLBACK FUNCTIONS
      */
-    this.didUpdateItemQty = function(updatedItemId,qty)
+    if(typeof(_ARIS.didUpdateItemQty) === 'undefined')
     {
-        alert("Item '"+updatedItemId+"' qty was updated to '"+qty+"'. Override ARIS.didUpdateItemQty(updatedItemId,qty) to handle this event however you want! (Or, just add 'ARIS.didUpdateItemQty = function(updatedItemId,qty){return;};' to your code to just get rid of this message)");
+        _ARIS.didUpdateItemQty = function(updatedItemId,qty)
+        {
+            alert("Item '"+updatedItemId+"' qty was updated to '"+qty+"'. Override ARIS.didUpdateItemQty(updatedItemId,qty) to handle this event however you want! (Or, just add 'ARIS.didUpdateItemQty = function(updatedItemId,qty){return;};' to your code to just get rid of this message)");
+        }
     }
 
-    this.bumpReceived = function(bumpString)
+    if(typeof(_ARIS.didReceivePlayer) === 'undefined')
     {
-        alert("Just recieved a successful bump with this information: '"+bumpString+"'. Override ARIS.bumpReceived(bumpString) to handle this event however you want! (Or, just add 'ARIS.bumpReceived = function(bumpString){return;};' to your code to just get rid of this message)");
+        _ARIS.didReceivePlayer = function(player)
+        {
+            alert("The player's name is "+player.name+". Override ARIS.didReceivePlayer(player) to handle this event however you want! (Or, just add 'ARIS.didReceivePlayer = function(player){return;};' to your code to just get rid of this message)");
+        }
     }
 
-    this.hook = function(paramsJSON)
+    if(typeof(_ARIS.hook) === 'undefined')
     {
-        alert("Just recieved a hook from ARIS with this information: '"+paramsJSON+"'. Override ARIS.hook(paramsJSON) to handle this event however you want! (Or, just add 'ARIS.hook = function(paramsJSON){return;};' to your code to just get rid of this message)");
+        _ARIS.hook = function(paramsJSON)
+        {
+            alert("Just recieved a hook from ARIS with this information: '"+paramsJSON+"'. Override ARIS.hook(paramsJSON) to handle this event however you want! (Or, just add 'ARIS.hook = function(paramsJSON){return;};' to your code to just get rid of this message)");
+        }
     }
+    
+    if(typeof(_ARIS.ready) === 'undefined')
+    {
+        _ARIS.ready = function()
+        {
+            return;
+        }
+    }
+
+    if(typeof(_ARIS.callbacksEnabled) !== 'undefined' && !_ARIS.callbacksEnabled)
+    {
+      _ARIS.didUpdateItemQty = function(updatedItemId,qty) {};
+      _ARIS.didReceivePlayer = function(player)            {};
+      _ARIS.hook             = function(paramsJSON)        {};
+    }
+
+    return _ARIS;
 }
 
-var ARIS = new ARISJS();
+if(typeof(ARIS) === 'undefined') var ARIS = {};
+ARIS = ARISJS(ARIS);
+
+ARIS.ready();
