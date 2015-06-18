@@ -1,6 +1,5 @@
 <script type='text/javascript'>
 var ARIS = {};
-ARIS.dataCacheEnabled = true;
 ARIS.ready = function()
 {
   ARIS.callService("triggers.getTriggersForGame",  {"game_id":1082}, ARIS.cache.player.auth, receivedTriggers);
@@ -31,7 +30,7 @@ function receivedTriggers(r)
   }
 }
 </script>
-<div id="content" style="width:100%px; height:1000px; word-wrap:break-word;">
+<div id="content" style="width:100%; height:1000px; word-wrap:break-word;">
 
 Put your text content here!
 
