@@ -2,19 +2,21 @@
 var ARIS = {};
 ARIS.ready = function()
 {
+  var item_name = "SimpIA";
   var minQty = 1;
   var maxQty = 10;
 
+  var item_id = ARIS.cache.idForItemName(item_name);
   var amt = minQty + Math.floor((Math.random()*(maxQty-minQty+1)));
 
   //give random amount
-  //ARIS.givePlayerItemCount(ARIS.cache.idForItemName("SimpIA"),amt);
+  //ARIS.givePlayerItemCount(item_id,amt);
 
   //take random amount
-  //ARIS.takePlayerItemCount(ARIS.cache.idForItemName("SimpIA"),amt);
+  //ARIS.takePlayerItemCount(item_id,amt);
 
   //set random amount
-  ARIS.setPlayerItemCount(ARIS.cache.idForItemName("SimpIA"),amt);
+  ARIS.setPlayerItemCount(item_id,amt);
 }
 </script>
 <div id="content" style="width:100%; height:1000px; word-wrap:break-word;">

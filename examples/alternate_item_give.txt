@@ -1,0 +1,26 @@
+<script type='text/javascript'>
+var ARIS = {};
+ARIS.ready = function()
+{
+  var counter_item_name = "counter_item";
+  var team_a_item_name = "Team A";
+  var team_b_item_name = "Team B";
+
+  var counter_item_id = ARIS.cache.idForItemName(counter_item_name);
+  var team_a_item_id  = ARIS.cache.idForItemName(team_a_item_name);
+  var team_b_item_id  = ARIS.cache.idForItemName(team_b_item_name);
+
+  var current_qty = ARIS.cache.getGameItemCount(counter_item_id);
+
+  if(current_qty % 2 == 0) { ARIS.givePlayerItemCount(team_a_item_id,1); }
+  else                     { ARIS.givePlayerItemCount(team_b_item_id,1); }
+
+  ARIS.giveGameItemCount(counter_item_id,1);
+}
+</script>
+<div id="content" style="width:100%; height:1000px; word-wrap:break-word;">
+
+Put your text content here!
+
+</div>
+
