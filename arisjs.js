@@ -82,6 +82,7 @@ var ARISJS = function(_ARIS)
         {
             if(request.readyState == 4)
             {
+                debugLog(request.responseText);
                 if(request.status == 200)
                     callback(JSON.parse(request.responseText));
                 else
@@ -91,7 +92,7 @@ var ARISJS = function(_ARIS)
         body.auth = auth;
         request.open('POST', url, true);
         request.setRequestHeader("Content-type","application/x-www-form-urlencoded");
-      document.getElementById("debug").innerHTML = JSON.stringify(body);
+        debugLog(JSON.stringify(body));
         request.send(JSON.stringify(body));
     }
 
@@ -155,7 +156,13 @@ var ARISJS = function(_ARIS)
       _ARIS.cache.setGameItem   = function(item_id, qty) { cache_game[item_id]   = qty; }
       _ARIS.cache.setGroupItem  = function(item_id, qty) { cache_group[item_id]  = qty; }
       
-      _ARIS.cache.setPlayer = function(player) { _ARIS.cache.player = player; };
+      _ARIS.cache.setPlayer = function(player)
+      {
+        _ARIS.cache.player = player;
+        _ARIS.cache.player.auth = {};
+        _ARIS.cache.player.auth.user_id = _ARIS.cache.player.user_id;
+        _ARIS.cache.player.auth.key = _ARIS.cache.player.key;
+      };
       
       _ARIS.cache.detach = function()
       {
@@ -166,6 +173,32 @@ var ARISJS = function(_ARIS)
       }
 
       _ARIS.cache.wholeCache = function() { return {"player":cache_player,"game":cache_game,"group":cache_group}; } //FOR DEBUGGING
+    }
+  
+    /*
+     * ARIS DEBUG LOG FUNCTIONS
+     */
+    var debugLog = function(str) { }
+  
+    var log_enabled = (typeof(_ARIS.debugLogEnabled) !== 'undefined' && _ARIS.debugLogEnabled);
+    if(log_enabled)
+    {
+      var debug = document.createElement('div');
+      debug.setAttribute("id","_ARIS_JS_DEBUG_LOG");
+      debug.style.width = "100%";
+      debug.style.height = "100%";
+      debug.style.position = "absolute";
+      debug.style.top = "0px";
+      debug.style.left = "0px";
+      debug.style.pointerEvents = "none";
+      debug.style.wordWrap = "break-word";
+      document.body.appendChild(debug);
+      
+      debugLog = function(str)
+      {
+        console.log(str);
+        debug.innerHTML = str+"<br />"+debug.innerHTML;
+      }
     }
 
     return _ARIS;
