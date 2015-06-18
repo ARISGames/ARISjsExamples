@@ -3,21 +3,37 @@ var ARIS = {};
 ARIS.dataCacheEnabled = true;
 ARIS.ready = function()
 {
-  document.getElementById("ready").innerHTML = "ready";
   ARIS.callService("triggers.getTriggersForGame",  {"game_id":1082}, ARIS.cache.player.auth, receivedTriggers);
 }
 
 function receivedTriggers(r)
 {
+  var minX = -89.41443783243983;
+  var maxX = -89.38834530314296;
+  var minY = 43.07476484307851;
+  var maxY = 43.067491657591;
+
   for(var i = 0; i < r.data.length; i++)
   {
     var t = r.data[i];
+
+    /*
+    //random movement from current loc
     t.latitude  = Number(t.latitude)+(Math.random()*0.2)-0.1;
     t.longitude = Number(t.longitude)+(Math.random()*0.2)-0.1;
+    */
+
+    //random movement within rect
+    t.latitude  = minY+(Math.random()*(maxY-minY));
+    t.longitude = minX+(Math.random()*(maxX-minX));
+
     ARIS.callService("triggers.updateTrigger", t, ARIS.cache.player.auth, function(x){});
   }
 }
 </script>
-<div id="ready" style="width:200px; height:1000px; word-wrap:break-word;">
-not ready
+<div id="content" style="width:100%px; height:1000px; word-wrap:break-word;">
+
+Put your text content here!
+
 </div>
+

@@ -11,7 +11,7 @@ Magic code snippet to copy/paste into text area to enable arisjs:
     {
         //Put any ARIS commands here
         //example:
-        //ARIS.giveItemCount(42,1); //gives player 1 qty of item 42
+        //ARIS.givePlayerItemCount(42,1); //gives player 1 qty of item 42
     }
     </script>
 
