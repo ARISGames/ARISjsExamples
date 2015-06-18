@@ -1,0 +1,250 @@
+<html>
+<style type='text/css'>
+.code
+{
+font-family:Courier;
+color:#222222;
+border:1px solid #222222;
+padding:20px;
+background-color:#DDDDDD;
+}
+.shell
+{
+color:#880088;
+}
+</style>
+<body>
+
+<div style="max-width:900px; padding:20px; margin:0px auto;">
+<h4>Overview/Tutorial</h4>
+
+ARISjs is a javascript API that allows creators to alter the state of an ARIS player in highly customizeable ways. These customizations range from full fledged interactive mini-games, to complex menu structuring, to navigation flow redirection, to altering a player's inventory in ways not currently supported by native ARIS (randomization, timed or conditional alterations, etc...).<br />
+<br />
+This customization ability relies on the use of javascript- a programming language originally developed for the web. While you will most likely need to have some programming experience (or have access to someone who does) to accomplish the more advanced or personalized customizations, there will be simple examples later on in this document that can be copied/pasted/tweaked with little or no programming experience required.<br />
+<br />
+ARISjs scripts have a chance to run whenever* text gets displayed to a player (in the contents of a plaque, a quest description, etc...). This is because wherever* there is text displayed in ARIS, it is being displayed through what is called a "Web View"- essentially an entire miniature web page nested into ARIS's layout whose content is simply the text entered into the ARIS editor. (This also means that these text areas can be formatted in the same ways as any traditional web page- with html, css, and of course, javascript.)<br />
+<br />
+(*- <i>Just about</i> whenever/wherever. Some text displays (titles, quantities, etc...) are too small to warrant making them full-fledged web views.)<br />
+<br />
+So, to use ARISjs, first find the text area corresponding to when you want the script to be invoked (for example, if you want to give the player a random number of widgets when they view a plaque, go into the plaque editor). From here, enter this into the Text field:<br />
+<br />
+
+<div class='code'>
+<span class='shell'>
+&#60;script type="text/javascript"&#62;<br />
+var ARIS = {};<br />
+ARIS.ready = function() {<br />
+</span>
+<br />
+// your code goes here<br />
+<br />
+<span class='shell'>
+}<br />
+&#60;/script&#62;<br />
+</span>
+</div>
+
+<br />
+This will be the basic shell around all ARISjs scripts. In short, it lets ARIS know to pay attention to this Web View, and gives you a chance to tell ARIS what to do after ARIS is ready to recieve commands (for a more technical account of what is going on, see the 'Technical Documentation' section).<br />
+<br />
+Within the ARIS.ready block (the "your code goes here" section), you are safe to use any of the ARISjs API calls. The API is as follows:<br />
+<br />
+
+<div class='code'>
+// Simple<br />
+ARIS.logout();&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; //Logs player out (exits to log in screen)<br />
+ARIS.exit();&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; //Exits the currently viewing object<br />
+ARIS.exitToTab(tab);&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; //Exits to the specified tab<br />
+ARIS.exitToScanner(prompt);&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//Exits to the scanner tab with specified prompt<br />
+ARIS.exitToPlaque(plaque_id);&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//Exits to plaque object with specified id<br />
+ARIS.exitToWebpage(webpageId);&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; //Exits to webpage object with specified id<br />
+ARIS.exitToItem(item_id);&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//Exits to item object with specified id<br />
+ARIS.exitToDialog(dialog_id);&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//Exits to dialog with specified id<br />
+ARIS.exitGame();&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; //Exits to the game picker<br />
+ARIS.vibrate();&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//Vibrates ARIS<br />
+ARIS.setItemCount(item_id,qty);&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//Sets qty to count of item with specified id<br />
+ARIS.giveItemCount(item_id,qty);&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; //Adds qty to count of item with specified id<br />
+ARIS.takeItemCount(item_id,qty);&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; //Removes qty from count of item with specified id<br />
+ARIS.cache.getItemCount(item_id);&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//Returns count of item with specified id<br />
+<br />
+//Requires callbacks<br />
+ARIS.getItemCount(item_id);&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//Gets count of item with specified id<br />
+ARIS.getPlayer();&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//Gets package of information about player<br />
+<br />
+//Advanced<br />
+ARIS.prepareMedia(media_id);&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; //Loads audio media with specified id into memory<br />
+ARIS.playMedia(media_id);&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//Plays audio media with specified id<br />
+ARIS.stopMedia(media_id);&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//Stops playing audio media with specified id<br />
+ARIS.setMediaVolume(media_id, volume); //Sets volume for audio media with specified id<br />
+</div>
+
+<br />
+If simply copied and pasted in place of the "// your code goes here" line, any of these calls would execute immediately upon the text popping up on screen. For example, the code:<br />
+<br />
+
+<div class='code'>
+<span class='shell'>
+&#60;script type="text/javascript"&#62;<br />
+var ARIS = {};<br />
+ARIS.ready = function() {<br />
+</span>
+<br />
+ARIS.setItemCount(1234,10);<br />
+<br />
+<span class='shell'>
+}<br />
+&#60;/script&#62;<br />
+</span>
+</div>
+
+<br />
+if put in a plaque will, as soon as the plaque is opened, set the quantity of item with id 1234 to 10 (Note that "setting the qty to x" is not directly possible through native means within ARIS; the editor only offers incrementing and decrementing). Similartly, if "ARIS.setItemCount(1234,10);" was replaced with "ARIS.exit();", the plaque will close as soon as it is opened.<br />
+<br />
+So, what if you want to have the script executed at some time other than immediately upon opening? Currently, ARIS supports execution on player input in a few places: Quest Descriptions and Plaques* (<- plaques coming soon).<br />
+<br />
+In these places, the editor offers a drop down that allows you to set the functionality of hitting the "continue" button on the bottom of the screen. Among these options are 'exit to (various tabs)', 'exit to (various objects)', and of most importance- 'javascript'. With 'javascript' selected, ARIS will look for an ARIS.hook block and execute that upon the button's press.<br />
+<br />
+For example, if you wanted to vibrate ARIS, give the player a penny, and exit to the map upon hitting "begin quest", you would place the following in the quest's description:<br />
+<br />
+
+<div class='code'>
+<span class='shell'>
+&#60;script type="text/javascript"&#62;<br />
+var ARIS = {};<br />
+ARIS.ready = function() {<br />
+</span>
+<br />
+ARIS.hook = function()<br />
+{<br />
+&nbsp;&nbsp;ARIS.vibrate();<br />
+&nbsp;&nbsp;ARIS.giveItemCount(1234,1); //assuming the item id for 'penny' is 1234...<br />
+&nbsp;&nbsp;ARIS.exitToTab('Map');<br />
+}<br />
+<br />
+<span class='shell'>
+}<br />
+&#60;/script&#62;<br />
+</span>
+</div>
+
+<br />
+So, to recap- putting ARIS API calls within ARIS.ready will result in their execution immediately upon text being displayed. Putting ARIS API calls within an ARIS.hook block (also within ARIS.ready) will result in their execution upon player touch of the continue button (assuming you have selected 'javascript' as the function of that button within the ARIS editor).<br />
+<br />
+If you want more control of exactly when the script will be called you are free to do so by implementing your own javascript/html interface, but that is outside the scope of this documentation.<br />
+<br />
+The above shows how to send ARIS Commands from within javascript, but what if you need ARIS to send javascript some information?<br />
+<br />
+NOTE- there isn't much point in bringing data into javascript unless you intend to use some native javascript to make sense of and manipulate that data. So from here on out, we will be sprinkling in some native javascript to perform calculations and set up infrastructure. I'll only gloss over the specifics of what I'm doing, as learning javascript is outside the scope of this tutorial.<br />
+<br />
+There are two ways to accomplish this: via callbacks, or via a cache.<br />
+<br />
+<b>Callbacks</b><br />
+<br />
+NOTE- for the majority of simple modifications of player inventory, using the cache is sufficient, and you shouldn't need to use callbacks (feel free to skip to the 'cache' section). However, if you plan on accomplishing more advanced tasks, it is worthwhile to understand how the callback API functions.<br />
+<br />
+Say you want a plaque to remove 10% of a player's dollars. Because there is no increment-or-decrement-by-percent API, we'll need to know the player's currently owned qty to derive the desired quantity, and then use the API to set that. Here is an example of what that might look like:<br />
+<br />
+
+<div class='code'>
+<span class='shell'>
+&#60;script type="text/javascript"&#62;<br />
+var ARIS = {};<br />
+ARIS.ready = function() {<br />
+</span>
+<br />
+var dollars_id = 1234;<br />
+<br />
+ARIS.didUpdateItemQty = function(item_id, qty)<br />
+{<br />
+&nbsp;&nbsp;if(item_id == dollars_id)<br />
+&nbsp;&nbsp;{<br />
+&nbsp;&nbsp;&nbsp;&nbsp;ARIS.didUpdateItemQty = function(item_id, qty) {}; //detach response block<br />
+&nbsp;&nbsp;&nbsp;&nbsp;var currently_owned_dollars = qty;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;ARIS.setItemCount(dollars_id, Math.round(currently_owned_dollars*0.9));<br />
+&nbsp;&nbsp;}<br />
+}<br />
+<br />
+ARIS.getItemCount(dollars_id);<br />
+<br />
+<span class='shell'>
+}<br />
+&#60;/script&#62;<br />
+</span>
+</div>
+
+<br />
+First thing to note is that this code is much larger and more complex than the previous examples that simply request that ARIS performs some action. The reason for this falls into a more advanced concept within programming- asynchronous communication.<br />
+<br />
+Whenever ARISjs communicates with ARIS (or visa versa), there is an undetermined amount of time that will pass between the "request" and the "response" (this time is usually sub-millisecond, so don't worry about it from the perspective of player perception). Because of this, the "request" and "response" must be separated in code.<br />
+<br />
+The "response" is a block of code that will get called once ARIS is done with what you've requested it, and potentially has some information ready for you. The "request" is the expression of a desire for ARIS to perform some action at its soonest convenience. The way this often works is by first defining the "response" ("hey, when you're done, you should call this block"), then sending off the "request" ("ok, so now that you know what to do when you're done, go find the qty of the player's item!").<br />
+<br />
+In this case, the "response" is "ARIS.didUpdateItemQty" (every request that uses callbacks has a matching response block with a defined name). So, all you have to do is define what that block is, and then you are free to send off the request. Inside the response block, you can do whatever you want with the returned qty (the qty and item id are passed into the response block via function arguments). It is good practice to ensure the item_id in the block is the item_id you care about before performing any actions on the data, as multiple asynchronous calls might share the same response block. It is also good practice to clean up your response block attachments if you no longer intend to use them (for reasons we will see shortly...).<br />
+<br />
+ARIS.getItemCount is not the only asynchronous API call. In fact, every API call is asynchronous (except ARIS.cache.getItemCount, but we'll get to that...), they just use empty response blocks as they don't care what happens when ARIS is done. This means that our previous example containing:<br />
+<br />
+
+<div class='code'>
+&nbsp;&nbsp;ARIS.vibrate();<br />
+&nbsp;&nbsp;ARIS.giveItemCount(1234,1);<br />
+&nbsp;&nbsp;ARIS.exitToTab('Map');<br />
+</div>
+
+<br />
+actually played out more like ARISjs giving ARIS a list of things to do, that "eventually" get done (in computer time, "eventually" means a millisecond later...). This is a subtle difference that you will most likely not need to worry about for simple operations. (One such difference is that even after the line "giveItemCount" has been run, the player's qty will still not yet have increased).<br />
+<br />
+The API calls with callbacks are as follows:<br />
+<br />
+
+<div class='code'>
+ARIS.setItemCount(item_id,qty);&nbsp;&nbsp;-> ARIS.didUpdateItemQty(item_id, qty);<br />
+ARIS.giveItemCount(item_id,qty); -> ARIS.didUpdateItemQty(item_id, qty);<br />
+ARIS.takeItemCount(item_id,qty); -> ARIS.didUpdateItemQty(item_id, qty);<br />
+ARIS.getItemCount(item_id);&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-> ARIS.didUpdateItemQty(item_id, qty);<br />
+ARIS.getPlayer();&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-> ARIS.didReceivePlayer(player);<br />
+</div>
+
+<br />
+If you notice, set, give, and take all use the same callback as get for ItemCount. You can still use any of these without defining the response block if you don't care about the response. But make sure that if you DO have a response block, you are ready to handle it being called after any of these requests. (In the above example, if we didn't detach the response block (set it to an empty function) after we got the information we needed, the ARIS.setItemCount we call within the response would result in the same response block being called again, creating an infinite loop.)<br />
+<br />
+You might be asking "why would you need a response block for set, give, or take?". While none of those requests are necessarily explicitly asking for information, the response might be something other than exactly what you requested. For example, you might request to give the player 100 coins, but that would put them over the max number of coins allowed by their inventory (either by max_qty or max_inventory_weight). In this case, the response block would show that this happend (qty passed into the response block would be less than 100 + their previous qty). Or, you can use the response block as assurance that everything went as expected by comparing the newly set qty with your requested qty. Again, if this is more information than you care about, just make sure the response block isn't set and you don't have to worry about it.<br />
+<br />
+<b>Cache</b><br />
+<br />
+Ok. So asynchronous communication is complicated. What if you just want to simply modify the qty of an inventory item based on its current value, and don't want to deal with all that complexity?<br />
+<br />
+ARIS.cache was created for just this purpose.<br />
+<br />
+We'll use the same example (remove 10% of a player's dollars) to illustrate the differences between the methods. Here is the example with a cache:<br />
+<br />
+
+<div class='code'>
+<span class='shell'>
+&#60;script type="text/javascript"&#62;<br />
+var ARIS = {};<br />
+ARIS.ready = function() {<br />
+</span>
+<br />
+var dollars_id = 1234;<br />
+var currently_owned_dollars = ARIS.cache.getItemCount(dollars_id);<br />
+ARIS.setItemCount(dollars_id, Math.round(currently_owned_dollars*0.9));<br />
+<br />
+<span class='shell'>
+}<br />
+&#60;/script&#62;<br />
+</span>
+</div>
+
+<br />
+The most noticable difference is the great decrease in complexity and code length using this method. This requires no callbacks, no asynchronous communication, and uses the inline return value of the function.<br />
+<br />
+So why not use this method? Like its name implies, this API just references a cache; it doesn't actually talk directly to ARIS. This means that any changes to the player's quantity that occur AFTER the script is initially run will NOT be reflected in the result.<br />
+<br />
+For example, say you've created a large interactive that potentially doubles and halves qty of an item called "points" from a player's inventory. Every time they double points you need to know how many they currently have to determine how much to give them. If you use the cache, the first time you request their currently owned points will be correct; so you double that number and set their owned quality. Then, if they double it again, the cache will not have changed/updated and so your "doubling" their points will actually just be "doubling" their previously owned points- not what you intended to do.<br />
+<br />
+So, the rule of thumb is that if you simply want to perform one operation based on the qty of an item in the player's inventory, using the cache is the simpler, more straightforward, and less error-prone option. Anything more complicated than that, and you might need to look into callbacks.<br />
+<br />
+</div>
+</body>
+</html>
+

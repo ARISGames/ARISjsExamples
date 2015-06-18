@@ -1,9 +1,3 @@
-// NOTE-
-// This file is included simply for reference. You 
-// DO NOT need to <script src=""> include this file 
-// in your javascript. ARIS will automatically inject
-// it.
-
 var ARISJS = function(_ARIS)
 {
     _ARIS.requestsQueue = new Array();
@@ -12,7 +6,7 @@ var ARISJS = function(_ARIS)
     _ARIS.enqueueRequest = function(nextRequest)
     {
         _ARIS.requestsQueue.push(nextRequest);
-        if(!_ARIS.currentlyCalling) 
+        if(!_ARIS.currentlyCalling)
         {
             _ARIS.currentlyCalling = true;
             _ARIS.dequeueRequest();
@@ -26,18 +20,10 @@ var ARISJS = function(_ARIS)
 
     _ARIS.dequeueRequest = function()
     {
-        if(_ARIS.requestsQueue.length) 
+        if(_ARIS.requestsQueue.length)
         {
             var req = _ARIS.requestsQueue.shift();
             window.location = req;
-
-            /* DEBUG - uncomment to use in browser without error */
-            /*
-            _ARIS.isCurrentlyCalling();
-            if(req == "aris://inventory/get/" + 99999999)
-                _ARIS.didUpdateItemQty(99999999,1);
-            _ARIS.isNotCurrentlyCalling();
-            //*/
         }
     }
 
@@ -47,61 +33,70 @@ var ARISJS = function(_ARIS)
         _ARIS.dequeueRequest();
     }
 
-    _ARIS.closeMe             = function()                { _ARIS.enqueueRequest("aris://closeMe"); }
-    _ARIS.exitToTab           = function(tab)             { _ARIS.enqueueRequest("aris://exitTo/tab/"+tab); }
-    _ARIS.exitToScanner       = function(prompt)          { _ARIS.enqueueRequest("aris://exitTo/scanner/"+prompt); }
-    _ARIS.exitToPlaque        = function(plaqueId)        { _ARIS.enqueueRequest("aris://exitTo/plaque/"+plaqueId); }
-    _ARIS.exitToWebpage       = function(webpageId)       { _ARIS.enqueueRequest("aris://exitTo/webpage/"+webpageId); }
-    _ARIS.exitToItem          = function(itemId)          { _ARIS.enqueueRequest("aris://exitTo/item/"+itemId); }
-    _ARIS.exitToCharacter     = function(characterId)     { _ARIS.enqueueRequest("aris://exitTo/character/"+characterId); }
-    _ARIS.prepareMedia        = function(mediaId)         { _ARIS.enqueueRequest("aris://media/prepare/" + mediaId); }
-    _ARIS.playMedia           = function(mediaId)         { _ARIS.enqueueRequest("aris://media/play/" + mediaId); }
-    _ARIS.playMediaAndVibrate = function(mediaId)         { _ARIS.enqueueRequest("aris://media/playAndVibrate/" + mediaId); }
-    _ARIS.stopMedia           = function(mediaId)         { _ARIS.enqueueRequest("aris://media/stop/" + mediaId); }
-    _ARIS.setMediaVolume      = function(mediaId, volume) { _ARIS.enqueueRequest("aris://media/setVolume/" + mediaId + "/" + volume); }
-    _ARIS.getItemCount        = function(itemId)          { _ARIS.enqueueRequest("aris://inventory/get/" + itemId); }
-    _ARIS.setItemCount        = function(itemId,qty)      { _ARIS.enqueueRequest("aris://inventory/set/" + itemId + "/" + qty); }
-    _ARIS.giveItemCount       = function(itemId,qty)      { _ARIS.enqueueRequest("aris://inventory/give/" + itemId + "/" + qty); }
-    _ARIS.takeItemCount       = function(itemId,qty)      { _ARIS.enqueueRequest("aris://inventory/take/" + itemId + "/" + qty); }
-    _ARIS.getPlayer           = function()                { _ARIS.enqueueRequest("aris://player"); } 
+    //legacy
+    _ARIS.closeMe             = function()                 { _ARIS.enqueueRequest("aris://exit"); }
+    _ARIS.hideLeaveButton     = function()                 { }
+    _ARIS.playMediaAndVibrate = function(media_id)         { }
+    _ARIS.exitToCharacter     = function(dialog_id)        { _ARIS.enqueueRequest("aris://exit/character/"+dialog_id); }
+    _ARIS.getItemCount        = function(item_id)          { _ARIS.enqueueRequest("aris://instances/player/get/" + item_id); }
+    _ARIS.setItemCount        = function(item_id,qty)      { _ARIS.enqueueRequest("aris://instances/player/set/" + item_id + "/" + qty); }
+    _ARIS.giveItemCount       = function(item_id,qty)      { _ARIS.enqueueRequest("aris://instances/player/give/" + item_id + "/" + qty); }
+    _ARIS.takeItemCount       = function(item_id,qty)      { _ARIS.enqueueRequest("aris://instances/player/take/" + item_id + "/" + qty); }
+
+    _ARIS.logOut              = function()                 { _ARIS.enqueueRequest("aris://logout"); }
+    _ARIS.exit                = function()                 { _ARIS.enqueueRequest("aris://exit"); }
+    _ARIS.exitToTab           = function(tab)              { _ARIS.enqueueRequest("aris://exit/tab/"+tab); }
+    _ARIS.exitToScanner       = function(prompt)           { _ARIS.enqueueRequest("aris://exit/scanner/"+prompt); }
+    _ARIS.exitToPlaque        = function(plaque_id)        { _ARIS.enqueueRequest("aris://exit/plaque/"+plaque_id); }
+    _ARIS.exitToWebpage       = function(webpageId)        { _ARIS.enqueueRequest("aris://exit/webpage/"+webpageId); }
+    _ARIS.exitToItem          = function(item_id)          { _ARIS.enqueueRequest("aris://exit/item/"+item_id); }
+    _ARIS.exitToDialog        = function(dialog_id)        { _ARIS.enqueueRequest("aris://exit/character/"+dialog_id); }
+    _ARIS.exitGame            = function()                 { _ARIS.enqueueRequest("aris://exit/game/"); }
+    _ARIS.prepareMedia        = function(media_id)         { _ARIS.enqueueRequest("aris://media/prepare/" + media_id); }
+    _ARIS.playMedia           = function(media_id)         { _ARIS.enqueueRequest("aris://media/play/" + media_id); }
+    _ARIS.stopMedia           = function(media_id)         { _ARIS.enqueueRequest("aris://media/stop/" + media_id); }
+    _ARIS.setMediaVolume      = function(media_id, volume) { _ARIS.enqueueRequest("aris://media/setVolume/" + media_id + "/" + volume); }
+    _ARIS.vibrate             = function()                 { _ARIS.enqueueRequest("aris://vibrate"); }
+    _ARIS.getPlayerItemCount  = function(item_id)          { _ARIS.enqueueRequest("aris://instances/player/get/" + item_id); }
+    _ARIS.setPlayerItemCount  = function(item_id,qty)      { _ARIS.enqueueRequest("aris://instances/player/set/" + item_id + "/" + qty); }
+    _ARIS.givePlayerItemCount = function(item_id,qty)      { _ARIS.enqueueRequest("aris://instances/player/give/" + item_id + "/" + qty); }
+    _ARIS.takePlayerItemCount = function(item_id,qty)      { _ARIS.enqueueRequest("aris://instances/player/take/" + item_id + "/" + qty); }
+    _ARIS.getGameItemCount    = function(item_id)          { _ARIS.enqueueRequest("aris://instances/game/get/" + item_id); }
+    _ARIS.setGameItemCount    = function(item_id,qty)      { _ARIS.enqueueRequest("aris://instances/game/set/" + item_id + "/" + qty); }
+    _ARIS.giveGameItemCount   = function(item_id,qty)      { _ARIS.enqueueRequest("aris://instances/game/give/" + item_id + "/" + qty); }
+    _ARIS.takeGameItemCount   = function(item_id,qty)      { _ARIS.enqueueRequest("aris://instances/game/take/" + item_id + "/" + qty); }
+    _ARIS.getGroupItemCount   = function(item_id)          { _ARIS.enqueueRequest("aris://instances/group/get/" + item_id); }
+    _ARIS.setGroupItemCount   = function(item_id,qty)      { _ARIS.enqueueRequest("aris://instances/group/set/" + item_id + "/" + qty); }
+    _ARIS.giveGroupItemCount  = function(item_id,qty)      { _ARIS.enqueueRequest("aris://instances/group/give/" + item_id + "/" + qty); }
+    _ARIS.takeGroupItemCount  = function(item_id,qty)      { _ARIS.enqueueRequest("aris://instances/group/take/" + item_id + "/" + qty); }
+    _ARIS.getPlayer           = function()                 { _ARIS.enqueueRequest("aris://player"); }
 
     //Call ARIS API directly (USE WITH CAUTION)
-    _ARIS.callService = function(serviceName, callback, GETparams, POSTparams)
+    _ARIS.callService = function(serviceName, body, auth, callback)
     {
         var ROOT_URL = "http://arisgames.org"
-        var url;
-        if(GETparams) url = ROOT_URL+'/server/json.php/v1.'+serviceName+GETparams;
-        else          url = ROOT_URL+'/server/json.php/v1.'+serviceName;
-    
+        var url = ROOT_URL+'/server/json.php/v2.'+serviceName;
+
         var request = new XMLHttpRequest();
         request.onreadystatechange = function()
         {
             if(request.readyState == 4)
             {
                 if(request.status == 200)
-                    callback(request.responseText);
+                    callback(JSON.parse(request.responseText));
                 else
                     callback(false);
             }
         };
-        if(POSTparams)
-        {
-            request.open('POST', url, true);
-            request.setRequestHeader("Content-type","application/x-www-form-urlencoded");
-            request.send(POSTparams);
-            console.log("POSTparams:" + POSTparams);
-            console.log("url:" + url);
-        }
-        else
-        {
-            request.open('GET', url, true);
-            request.send();
-            console.log("GETurl:" + url);
-        }
+        body.auth = auth;
+        request.open('POST', url, true);
+        request.setRequestHeader("Content-type","application/x-www-form-urlencoded");
+      document.getElementById("debug").innerHTML = JSON.stringify(body);
+        request.send(JSON.stringify(body));
     }
 
     //Not ARIS related... just kinda useful
-    _ARIS.parseURLParams = function(url) 
+    _ARIS.parseURLParams = function(url)
     {
         var queryStart = url.indexOf("?") + 1;
         var queryEnd   = url.indexOf("#") + 1 || url.length + 1;
@@ -125,50 +120,64 @@ var ARISJS = function(_ARIS)
     /*
      * ARIS CALLBACK FUNCTIONS
      */
-    if(typeof(_ARIS.didUpdateItemQty) === 'undefined')
-    {
-        _ARIS.didUpdateItemQty = function(updatedItemId,qty)
-        {
-            alert("Item '"+updatedItemId+"' qty was updated to '"+qty+"'. Override ARIS.didUpdateItemQty(updatedItemId,qty) to handle this event however you want! (Or, just add 'ARIS.didUpdateItemQty = function(updatedItemId,qty){return;};' to your code to just get rid of this message)");
-        }
-    }
+    var callbacks_enabled = (typeof(_ARIS.callbacksEnabled)     === 'undefined' || _ARIS.callbacksEnabled);
 
-    if(typeof(_ARIS.didReceivePlayer) === 'undefined')
-    {
-        _ARIS.didReceivePlayer = function(player)
-        {
-            alert("The player's name is "+player.name+". Override ARIS.didReceivePlayer(player) to handle this event however you want! (Or, just add 'ARIS.didReceivePlayer = function(player){return;};' to your code to just get rid of this message)");
-        }
-    }
+    if(!callbacks_enabled || typeof(_ARIS.didUpdateItemQty)       === 'undefined') { _ARIS.didUpdateItemQty       = function(updatedItemId,qty) {} }
+    if(!callbacks_enabled || typeof(_ARIS.didUpdatePlayerItemQty) === 'undefined') { _ARIS.didUpdatePlayerItemQty = function(updatedItemId,qty) {} }
+    if(!callbacks_enabled || typeof(_ARIS.didUpdateGameItemQty)   === 'undefined') { _ARIS.didUpdateGameItemQty   = function(updatedItemId,qty) {} }
+    if(!callbacks_enabled || typeof(_ARIS.didUpdateGroupItemQty)  === 'undefined') { _ARIS.didUpdateGroupItemQty  = function(updatedItemId,qty) {} }
+    if(!callbacks_enabled || typeof(_ARIS.didReceivePlayer)       === 'undefined') { _ARIS.didReceivePlayer       = function(player)            {} }
+    if(!callbacks_enabled || typeof(_ARIS.hook)                   === 'undefined') { _ARIS.hook                   = function(paramsJSON)        {} }
+    if(!callbacks_enabled || typeof(_ARIS.tick)                   === 'undefined') { _ARIS.tick                   = function(paramsJSON)        {} }
+    if(                      typeof(_ARIS.ready)                  === 'undefined') { _ARIS.ready                  = function()                  {} }
 
-    if(typeof(_ARIS.hook) === 'undefined')
-    {
-        _ARIS.hook = function(paramsJSON)
-        {
-            alert("Just recieved a hook from ARIS with this information: '"+paramsJSON+"'. Override ARIS.hook(paramsJSON) to handle this event however you want! (Or, just add 'ARIS.hook = function(paramsJSON){return;};' to your code to just get rid of this message)");
-        }
-    }
-    
-    if(typeof(_ARIS.ready) === 'undefined')
-    {
-        _ARIS.ready = function()
-        {
-            return;
-        }
-    }
+    /*
+     * ARIS CACHE FUNCTIONS (USER DO NOT TOUCH)
+     */
+    var cache_enabled = (typeof(_ARIS.dataCacheEnabled) !== 'undefined' && _ARIS.dataCacheEnabled);
 
-    if(typeof(_ARIS.callbacksEnabled) !== 'undefined' && !_ARIS.callbacksEnabled)
+    if(cache_enabled)
     {
-      _ARIS.didUpdateItemQty = function(updatedItemId,qty) {};
-      _ARIS.didReceivePlayer = function(player)            {};
-      _ARIS.hook             = function(paramsJSON)        {};
+      var cache_player = [];
+      var cache_game = [];
+      var cache_group = [];
+
+      _ARIS.cache = {};
+      _ARIS.cache.preload = function() {
+        _ARIS.enqueueRequest("aris://cache/preload");
+      };
+      
+      _ARIS.cache.getPlayerItemCount = function(item_id) { if(typeof(cache_player[item_id]) === 'undefined') return 0; return cache_player[item_id]; }
+      _ARIS.cache.getGameItemCount   = function(item_id) { if(typeof(cache_game[item_id]) === 'undefined')   return 0; return cache_game[item_id]; }
+      _ARIS.cache.getGroupItemCount  = function(item_id) { if(typeof(cache_group[item_id]) === 'undefined')  return 0; return cache_group[item_id]; }
+      
+      _ARIS.cache.setPlayerItem = function(item_id, qty) { cache_player[item_id] = qty; }
+      _ARIS.cache.setGameItem   = function(item_id, qty) { cache_game[item_id]   = qty; }
+      _ARIS.cache.setGroupItem  = function(item_id, qty) { cache_group[item_id]  = qty; }
+      
+      _ARIS.cache.setPlayer = function(player) { _ARIS.cache.player = player; };
+      
+      _ARIS.cache.detach = function()
+      {
+        _ARIS.cache.setPlayerItem = undefined;
+        _ARIS.cache.setGameItem = undefined;
+        _ARIS.cache.setGroupItem = undefined;
+        _ARIS.ready();
+      }
+
+      _ARIS.cache.wholeCache = function() { return {"player":cache_player,"game":cache_game,"group":cache_group}; } //FOR DEBUGGING
     }
 
     return _ARIS;
 }
 
-if(typeof(ARIS) === 'undefined') var ARIS = {};
-ARIS = ARISJS(ARIS);
+if(typeof(ARIS) === 'undefined') var ARIS = ARISJS({});
+else
+{
+  if(typeof ARIS.dataCacheEnabled === 'undefined')
+    ARIS.dataCacheEnabled = true;
+  ARIS = ARISJS(ARIS);
+}
 
-ARIS.ready();
-
+if(ARIS.dataCacheEnabled) ARIS.cache.preload();
+else ARIS.ready();
