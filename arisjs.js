@@ -69,6 +69,8 @@ var ARISJS = function(_ARIS)
     _ARIS.setGroupItemCount   = function(item_id,qty)      { _ARIS.enqueueRequest("aris://instances/group/set/" + item_id + "/" + qty); }
     _ARIS.giveGroupItemCount  = function(item_id,qty)      { _ARIS.enqueueRequest("aris://instances/group/give/" + item_id + "/" + qty); }
     _ARIS.takeGroupItemCount  = function(item_id,qty)      { _ARIS.enqueueRequest("aris://instances/group/take/" + item_id + "/" + qty); }
+    _ARIS.setGroup            = function(group_id)         { _ARIS.enqueueRequest("aris://group/set/" + group_id); }
+    _ARIS.setScene            = function(scene_id)         { _ARIS.enqueueRequest("aris://scene/set/" + scene_id); }
     _ARIS.getPlayer           = function()                 { _ARIS.enqueueRequest("aris://player"); }
 
     //Call ARIS API directly (USE WITH CAUTION)
@@ -148,18 +150,18 @@ var ARISJS = function(_ARIS)
       _ARIS.cache.preload = function() {
         _ARIS.enqueueRequest("aris://cache/preload");
       };
-      
+
       _ARIS.cache.idForItemName = function(item_name) { if(name_map[item_name] === 'undefined') return 0; return name_map[item_name]; }
-      
+
       _ARIS.cache.getPlayerItemCount = function(item_id) { if(typeof(cache_player[item_id]) === 'undefined') return 0; return cache_player[item_id]; }
       _ARIS.cache.getGameItemCount   = function(item_id) { if(typeof(cache_game[item_id]) === 'undefined')   return 0; return cache_game[item_id]; }
       _ARIS.cache.getGroupItemCount  = function(item_id) { if(typeof(cache_group[item_id]) === 'undefined')  return 0; return cache_group[item_id]; }
-      
+
       _ARIS.cache.setItemName   = function(item_id, name) { name_map[name] = item_id; }
       _ARIS.cache.setPlayerItem = function(item_id, qty)  { cache_player[item_id] = qty; }
       _ARIS.cache.setGameItem   = function(item_id, qty)  { cache_game[item_id]   = qty; }
       _ARIS.cache.setGroupItem  = function(item_id, qty)  { cache_group[item_id]  = qty; }
-      
+
       _ARIS.cache.setPlayer = function(player)
       {
         _ARIS.cache.player = player;
@@ -167,7 +169,7 @@ var ARISJS = function(_ARIS)
         _ARIS.cache.player.auth.user_id = _ARIS.cache.player.user_id;
         _ARIS.cache.player.auth.key = _ARIS.cache.player.key;
       };
-      
+
       _ARIS.cache.detach = function()
       {
         _ARIS.cache.setItemName = undefined;
@@ -179,12 +181,12 @@ var ARISJS = function(_ARIS)
 
       _ARIS.cache.wholeCache = function() { return {"player":cache_player,"game":cache_game,"group":cache_group}; } //FOR DEBUGGING
     }
-  
+
     /*
      * ARIS DEBUG LOG FUNCTIONS
      */
     var debugLog = function(str) { }
-  
+
     var log_enabled = (typeof(_ARIS.debugLogEnabled) !== 'undefined' && _ARIS.debugLogEnabled);
     if(log_enabled)
     {
@@ -198,7 +200,7 @@ var ARISJS = function(_ARIS)
       debug.style.pointerEvents = "none";
       debug.style.wordWrap = "break-word";
       document.body.appendChild(debug);
-      
+
       debugLog = function(str)
       {
         console.log(str);
