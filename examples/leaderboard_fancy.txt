@@ -1,0 +1,58 @@
+<script type='text/javascript'>
+var ARIS = {};
+
+var item_name = 'SimpleItem';
+var game_id = 7054; //will automate finding in future updates...
+
+ARIS.ready = function()
+{
+  var item_id = ARIS.cache.idForItemName(item_name);
+  ARIS.callService('misc.getLeaderboard',  {'game_id':game_id,'item_id':item_id}, {}, receivedLeaderboard);
+  animateLoad();
+}
+
+function receivedLeaderboard(r)
+{
+  loading = false;
+  var entries = r.data;
+  var e;
+
+  var content = "Players with the most "+item_name+"!<br /><br />";
+  content += "<div class='entry'><span class='name'>Player</span><span class='qty'>Owned</span></div>";
+  for(var i = 0; i < entries.length; i++)
+  {
+    e = entries[i];
+    //e = {"user_id":user_id,"user_name":user_name,"display_name":display_name,"qty":qty};
+    content += "<div class='entry'><span class='rank'>"+(i+1)+".</span><span class='name'>"+e.display_name+"</span><span class='qty'>"+e.qty+"</span></div>";
+  }
+
+  document.getElementById('content').innerHTML = content;
+}
+
+var loading = true;
+var loading_i = 0;
+var loading_disp = [
+"Loading",
+"Loading.",
+"Loading..",
+"Loading...",
+];
+function animateLoad()
+{
+  if(loading)
+  {
+    document.getElementById('content').innerHTML = loading_disp[loading_i];
+    loading_i = (loading_i+1)%loading_disp.length;
+    setTimeout(animateLoad,100);
+  }
+}
+</script>
+<style>
+.entry {width:100%; overflow:auto; }
+.rank {float:left; text-align:left; min-width:20px; }
+.name {float:left; text-align:left; }
+.qty {float:right; text-align:right; }
+</style>
+<div id='content' style='width:100%; height:1000px; word-wrap:break-word;'>
+</div>
+
