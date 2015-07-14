@@ -2,16 +2,11 @@
 var ARIS = {};
 ARIS.ready = function()
 {
-  var item_name = 'SimpleItem';
+  var item_name = 'Seconds';
   var item_id = ARIS.cache.idForItemName(item_name);
-  var current_qty = ARIS.cache.getPlayerItemCount(item_id);
-  if(current_qty < 5)
+  ARIS.tick = function()
   {
-    ARIS.givePlayerItemCount(item_id,1);
-  }
-  else
-  {
-    ARIS.takePlayerItemCount(item_id,1);
+    ARIS.givePlayerItemCount(item_id,10);
   }
 }
 </script>
