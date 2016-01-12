@@ -1,0 +1,16 @@
+<script type='text/javascript'>
+var ARIS = {};
+ARIS.ready = function()
+{
+  var user_id = ARIS.cache.player.user_id;
+  var user_name = ARIS.cache.player.user_name;
+  var display_name = ARIS.cache.player.display_name;
+  var player_info_el = document.getElementById('player_info');
+  player_info_el.innerHTML = 'Player's id:'+user_id+'<br />Player's name:'+user_name;
+}
+</script>
+<div id='content' style='width:100%; height:1000px; word-wrap:break-word;'>
+
+You have <span id='player_info'>0</span> items!
+
+</div>
