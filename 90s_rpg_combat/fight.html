@@ -1,0 +1,632 @@
+<!DOCTYPE html>
+<!-- Phil Loves You <3 -->
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+<meta name = "viewport" content = "width=device-width, user-scalable=no" />
+<title>Kkomamon Fight</title>
+
+<script type = "text/javascript">
+document.addEventListener('touchmove', function(e) {e.preventDefault();}, false);
+
+//ARIS ID Mapping Constants - You need to change these to match your game
+var HEALTH_ITEM_ID = 4298; //The id of the item that is used to track your players health points
+var XP_ITEM_ID = 4301; //The id of the item that is used to track your players experience points
+var FIRE_ABILITY_ID = 4304; //The id of the item that is used to track if your player has the FIRE power
+var KISS_ABILITY_ID = 4307; //The id of the item that is used to track if your player has the KISS power
+
+//This game also assumes three variables are set in the URL. ARIS will automatically add them
+//game_id, player_id and web_page_id
+
+//The names of all the characters to fight
+var kNames = new Array("aji","musawa","orbital","yongyong","pinkmoonaw");
+var kNamesCap = new Array("Aji","Musawa","Orbital","Yongyong","Pinkmoonaw");
+
+//Their starting HP
+var kMaxHealths = new Array(100,120,130,400,500); 
+
+//Their Attack Power
+var kAttacks = new Array(5,10,15,20,50);
+
+//The Web_id for each of the possible enemies. In ARIS, one webpage should be created for each. In this case, the Aji web page is webpage 584
+var kWebIds = new Array(584,578,590,587,581);
+
+
+var kKillIds = new Array(4295,0,0,0,0);
+
+//Power of the punch attack on each enemy
+var pPunch = new Array(30,10,10,10,10);
+
+//Power of the fire attack on each enemy
+var pFire = new Array(10,30,20,20,20);
+
+//Power of the kiss attack on each enemy
+var pKiss = new Array(40,40,40,40,40);
+
+
+var ARIS = {};
+ARIS.ready = function()
+{
+    setScene(sceneFight);
+    setTimeout(function(){initialize()},100);
+}
+
+function setScene(scene)
+{
+    document.getElementById("loading").style.display="none";
+    document.getElementById("fight").style.display="none";
+    document.getElementById("win").style.display="none";
+    document.getElementById("lose").style.display="none";
+
+    switch(scene)
+    {
+        case sceneLoading:
+            document.getElementById("loading").style.display="block";
+            break;
+        case sceneFight:
+            document.getElementById("fight").style.display="block";
+            break;
+        case sceneWin:
+            document.getElementById("catch").src="assets/"+kNames[kType]+".gif";
+            document.getElementById("win").style.display="block";
+            break;
+        case sceneLose:
+            document.getElementById("lose").style.display="block";
+            break;
+    }
+}
+
+function displayBonus(bonus)
+{
+    setScene("nil");
+    switch(bonus)
+    {
+        case bonusFire:
+            document.getElementById("firebonus").style.display="block";
+            break;
+        case bonusAwesome:
+            document.getElementById("awesomebonus").style.display="block";
+            break;
+    }
+}
+
+//Constants
+var delay = 300;
+var sceneLoading = 0;
+var sceneFight = 1;
+var sceneWin = 2;
+var sceneLose = 3;
+var bonusFire = 0;
+var bonusAwesome = 1;
+
+//Game Data
+var gameId; 
+var playerId;
+var k = 0;//Kkomamon
+var p = 1;//Player
+
+//Enemy Type Constants
+var kTypeAji = 0;
+var kTypeMusawa = 1;
+var kTypeOrbital = 2;
+var kTypeYongyong = 3;
+var kTypePinkmoonaw = 4;
+
+//Audio Mapping
+var kMediaIdMusic = 1;
+var kMediaIdMiss = 2;
+var kMediaIdPunch = 3;
+var kMediaIdFire = 4;
+var kMediaIdKiss = 5;
+var kMediaIdWin = 6;
+var kMediaIdLose = 7;
+
+var playMedia = function(media_id){
+  var url;
+  switch(media_id) {
+    case kMediaIdMusic:
+      url = './assets/music.m4a';
+      break;
+    case kMediaIdMiss:
+      url = './assets/miss.mp3';
+      break;
+    case kMediaIdPunch:
+      url = './assets/punch.caf';
+      break;
+    case kMediaIdFire:
+      url = './assets/fire.caf';
+      break;
+    case kMediaIdKiss:
+      url = './assets/kiss.caf';
+      break;
+    case kMediaIdWin:
+      url = './assets/win.caf';
+      break;
+    case kMediaIdLose:
+      url = './assets/loose.caf';
+      break;
+  }
+  var audio = new Audio(url);
+  audio.play();
+}
+
+var playMediaAndVibrate = function(media_id){
+  playMedia(media_id);
+  if (typeof ARIS.cache != "undefined") ARIS.vibrate();
+}
+
+//Variables
+var kHealth;
+var kType;
+var pHealth;
+var pLevel;
+var pXP;
+var pName;
+var turnProgress;
+
+function initialize()
+{
+    setScene(sceneFight);
+    //Get PlayerID and GameID from URL
+    var parseURLParams = function(url) 
+    {
+        var queryStart = url.indexOf("?") + 1;
+        var queryEnd   = url.indexOf("#") + 1 || url.length + 1;
+        var query      = url.slice(queryStart, queryEnd - 1);
+
+        var params  = {};
+        if (query === url || query === "") return params;
+        var nvPairs = query.replace(/\+/g, " ").split("&");
+
+        for(var i=0; i<nvPairs.length; i++)
+        {
+            var nv = nvPairs[i].split("=");
+            var n  = decodeURIComponent(nv[0]);
+            var v  = decodeURIComponent(nv[1]);
+            if(!(n in params)) params[n] = [];
+            params[n].push(nv.length === 2 ? v : null);
+        }
+        return params;
+    }
+    var params = parseURLParams(document.URL);
+    gameId = parseInt(params.game_id);
+    playerId = parseInt(params.player_id);
+    webPageId = parseInt(params.web_page_id);
+
+    //Get Stuff from Server
+    switch(webPageId)
+    {
+        case kWebIds[0]:
+            kType = kTypeAji;
+            break;
+        case kWebIds[1]:
+            kType = kTypeMusawa;
+            break;
+        case kWebIds[2]:
+            kType = kTypeOrbital;
+            break;
+        case kWebIds[3]:
+            kType = kTypeYongyong;
+            break;
+        case kWebIds[4]:
+            kType = kTypePinkmoonaw;
+            break;
+        default: 
+            kType = kTypeAji;
+    }
+    kHealth = kMaxHealths[kType];
+
+    pName = "Unknown Player Name";
+    pHealth = 50;
+    pXP = 10;
+    pLevel = 0;
+    
+    if (typeof ARIS.cache != "undefined") {
+      pName = ARIS.cache.player.display_name || ARIS.cache.player.user_name;
+      ARIS.getPlayerItemCount(HEALTH_ITEM_ID);
+      ARIS.getPlayerItemCount(XP_ITEM_ID);
+      ARIS.getPlayerItemCount(FIRE_ABILITY_ID);
+      ARIS.getPlayerItemCount(KISS_ABILITY_ID);
+    }
+
+    turnProgress = -1;
+    //End Server Get
+
+    displayHealth(p); 
+    displayHealth(k); 
+
+    //Set up the assets
+    document.getElementById("kkomamon").style.backgroundImage = "url('assets/" + kNames[kType] + ".gif')";
+    document.getElementById("player").style.backgroundImage = "url('assets/player.gif')";
+    document.getElementById("firebuttonimage").src = "assets/lockedButton.png";
+    document.getElementById("kissbuttonimage").src = "assets/lockedButton.png";
+    document.getElementById("punchbuttonimage").src = "assets/punchButton.png";
+    if(pLevel > 0) document.getElementById("firebuttonimage").src = "assets/fireButton.png";
+    if(pLevel > 1) document.getElementById("kissbuttonimage").src = "assets/kissButton.png";
+
+    //Begin Precaching Media
+    if (typeof ARIS.cache != "undefined") {
+      ARIS.setMediaVolume(kMediaIdMusic,0.20);
+      ARIS.prepareMedia(kMediaIdMusic);
+      ARIS.prepareMedia(kMediaIdMiss); 
+      ARIS.prepareMedia(kMediaIdPunch); 
+      ARIS.prepareMedia(kMediaIdFire); 
+      ARIS.prepareMedia(kMediaIdKiss); 
+      ARIS.prepareMedia(kMediaIdWin); 
+      ARIS.prepareMedia(kMediaIdLose);
+    }
+
+    //Start Music
+    playMedia(kMediaIdMusic);
+}
+
+ARIS.didUpdateItemQty = function(itemId,qty)
+{
+    //alert("Received Item Update:"+itemId+", qty:"+qty);
+    switch(itemId)
+    {
+        case HEALTH_ITEM_ID:
+            pHealth = qty;
+            displayHealth(p);
+            break;
+        case XP_ITEM_ID:
+            pXP = qty;
+            break;
+        case FIRE_ABILITY_ID:
+            if(qty > 0)
+            {
+                document.getElementById("firebuttonimage").src = "assets/fireButton.png";
+                pLevel = pLevel > 1 ? pLevel : 1;
+            }
+            break;
+        case KISS_ABILITY_ID:
+            if(qty > 0)
+            {
+                document.getElementById("kissbuttonimage").src = "assets/kissButton.png";
+                pLevel = pLevel > 2 ? pLevel : 2;
+            }
+            break;
+    }
+}
+
+function pause(millis) 
+{
+    var date = new Date();
+    var curDate = null;
+    do { curDate = new Date(); } 
+    while(curDate-date < millis)
+}
+
+function displayHealth(fighter)
+{
+    if(fighter == k)
+    {
+        document.getElementById("khealth").style.width = ((kHealth/kMaxHealths[kType])*146)+"px";
+        document.getElementById("kname").innerHTML = kNamesCap[kType]+" ("+kHealth+"/"+kMaxHealths[kType]+")";
+    }
+    else
+    {
+        document.getElementById("phealth").style.width = ((pHealth/100)*146)+"px";
+        //document.getElementById("pname").innerHTML = pName+" ("+pHealth+"/100)"; // <-- SHOULD BE THIS
+        document.getElementById("bogusdiv").innerHTML = pName+" ("+pHealth+"/100)"; //BUT BECAUSE CSS SUCKS, IS THIS
+    }
+}
+
+function action(attack, state)
+{
+    if(attack > pLevel || turnProgress > state) return;
+
+    document.getElementById("palert").innerHTML = "";
+    document.getElementById("palert").style.backgroundImage = "";
+    document.getElementById("kalert").innerHTML = "";
+    document.getElementById("kalert").style.backgroundImage = "";
+
+    turnProgress = state+1;
+
+    if(state == 0)
+    {
+        //You Attack        
+        if(Math.random() > 0.3)
+        {
+            //Hit
+            document.getElementById("kalert").style.backgroundImage = "url('assets/hit.png')";
+
+            if(attack == 0){
+                kHealth-=pPunch[kType]+(pXP/200)*pPunch[kType];
+                playMedia(kMediaIdPunch); 
+            }
+            if(attack == 1) {
+                kHealth-=pFire[kType]+(pXP/200)*pFire[kType];
+                playMedia(kMediaIdFire);
+            }
+
+            if(attack == 2) {
+                kHealth-=pKiss[kType]+(pXP/200)*pKiss[kType];
+                playMedia(kMediaIdKiss); 
+            }
+            kHealth = Math.round(kHealth);
+
+            if(kHealth < 0) kHealth = 0;
+            displayHealth(k);
+            if(kHealth == 0) { setTimeout(function(){kill(k)}, delay); return; }
+        }
+        else
+        {
+            //Miss
+            document.getElementById("kalert").style.backgroundImage = "url('assets/miss.png')";
+            playMedia(kMediaIdMiss); 
+
+        }
+        setTimeout(function(){action(attack, state+1)}, delay);
+    }
+
+    if(state == 1)
+    {
+        //They Attack
+        if(Math.random() > 0.3)
+        {
+            //Hit
+            document.getElementById("palert").style.backgroundImage = "url('assets/hit.png')";
+            playMediaAndVibrate(kMediaIdPunch); 
+            pHealth-=kAttacks[kType];
+            pHealth = Math.round(pHealth);
+
+            if(pHealth < 0) pHealth = 0;
+            displayHealth(p);
+            if(pHealth == 0) { setTimeout(function(){kill(p)}, delay); return; }
+        }
+        else
+        {
+            //Miss
+            document.getElementById("palert").style.backgroundImage = "url('assets/miss.png')";
+            playMedia(kMediaIdMiss); 
+
+        }
+        setTimeout(function(){action(attack, state+1)}, delay);
+
+        // update health and xp in ARIS
+        if (typeof ARIS.cache != "undefined") {
+          ARIS.setItemCount(HEALTH_ITEM_ID, pHealth);
+          ARIS.setItemCount(XP_ITEM_ID, pXP);
+        }
+    }
+
+    if(state == 2)
+    {
+        turnProgress = -1;
+    }
+
+}
+
+function kill(fighter)
+{   
+    if (typeof ARIS.cache != "undefined") ARIS.setMediaVolume(kMediaIdMusic,0.0);
+
+    if(fighter == k) 
+    {
+        playMedia(kMediaIdWin);
+        setScene(sceneWin);
+        pXP = pXP + 30; 
+        if (typeof ARIS.cache != "undefined") ARIS.giveItemCount(kKillIds[kType],1);
+    }
+    else 
+    {
+        playMedia(kMediaIdLose);
+        setScene(sceneLose);
+        pXP = pXP + 10; 
+        pHealth = 1;
+    }
+
+    if(pXP > 100 && pLevel < 1)
+    {
+        if (typeof ARIS.cache != "undefined") ARIS.setItemCount(FIRE_ABILITY_ID,1);
+        setTimeout(function(){displayBonus(bonusFire)},1000);
+    }
+    if(pXP >= 250 && pXP < 280)
+    {
+        setTimeout(function(){displayBonus(bonusAwesome)},1000);
+    }
+
+    // update health and xp in ARIS
+    if (typeof ARIS.cache != "undefined") ARIS.setItemCount(HEALTH_ITEM_ID, pHealth);
+    if (typeof ARIS.cache != "undefined") ARIS.setItemCount(XP_ITEM_ID, pXP);
+
+}
+
+</script>
+<style>
+div
+{
+    /*border-style:solid;
+    border-width:1px;
+    border-color:#FF0000;*/
+    padding:0px;
+    color:white;
+    font-family:Noteworthy;
+    font-weight:Bold;
+}
+
+body
+{
+-webkit-user-select:none;
+user-select:none;
+}
+
+.scene
+{
+  /* For some reason, adding border fixes the white bar at the top. */
+  border-style:solid;
+  border-width:2px;
+  border-color:#000000;
+  width:100%;
+  height:100%;
+  display:none;
+  background-color:#000000;
+}
+
+.bonus
+{
+  border-style:solid;
+  border-width:2px;
+  border-color:#000000;
+  width:100%;
+  height:100%;
+  display:none;
+  background-color:#000000;
+}
+
+.HUD
+{
+  margin:10px;
+  width:300px;
+  height:138px;
+  position:relative;
+}
+
+.button
+{
+  float:left; 
+  margin-left:10px; 
+  margin-top:10px; 
+  width:86px; 
+  height:80px;
+  border-style:solid; 
+  border-width:1px;
+}
+
+.info
+{
+  position:absolute;
+}
+
+.name
+{
+  height:25px;
+}
+
+.healthbar
+{
+  border-style:solid;
+  border-width:1px;
+  border-color:#FFFFFF;
+  width:150px;
+}
+
+.health
+{
+  margin:2px;
+  height:10px;
+  background-color:#00FF00;
+}
+
+.fighter
+{
+  position:absolute;
+  height:180px;
+  width:160px;
+}
+
+.alert
+{
+  position:absolute;
+  height:75px;
+  width:150px;
+  top:54px;
+  left:5px;
+}
+</style>
+</head>
+<body onLoad="initialize()" style="margin:0px; padding:0px;">
+<div id="fightScreen" style="position:relative; margin:0px; width:320px; height:416px;">
+
+<!-- Loading State -->
+<div id="loading" class="scene" style="display:block;">
+  <div style="color:#FFFFFF; position:absolute; top:198px; left:130px; height:20px; width:60px;">
+  loading...
+  </div>
+</div>
+
+<!-- Fight State -->    
+<div style="background-image:url('assets/background7.jpg');" id="fight" class="scene">
+  <div id="kkomamonHUD" class="HUD">
+    <div id="kinfo" class="info" style="left:10px; top:10px;">
+      <div id="khealthbar" class="healthbar">
+        <div id="khealth" class="health">
+        </div>
+      </div>
+      <div id="kname" class="name">
+        Kkomamon
+      </div>
+    </div>
+    <div id="kkomamon" class="fighter" style="left:140px; top:0px;">
+      <div id="kalert" class="alert">
+      </div>
+    </div>
+  </div>
+
+  <div id="playerHUD" class="HUD">
+    <div id="pinfo" class="info" style="left:140px; top:89px;">
+      <div id="pname" class="name" style="position:relative;">
+        <div id="bogusdiv" style="position:absolute; bottom:0px; right:0px;">
+          You
+        </div>
+      </div>
+      <div id="phealthbar" class="healthbar">
+        <div id="phealth" class="health">
+        </div>
+      </div>
+    </div>
+    <div id="player" class="fighter" style="left:0px; top:-42px;">
+      <div id="palert" class="alert">
+      </div>
+    </div>
+  </div>
+
+  <div id="actions" style="margin:10px; width:300px; height:100px;">
+    <div id="punch" class="button" onClick="action(0, 0)">
+      <img id="punchbuttonimage" src="" />
+    </div>
+    <div id="fire" class="button" onClick="action(1, 0)">
+      <img id="firebuttonimage" src="" />
+    </div>
+    <div id="kiss" class="button" onClick="action(2, 0)">
+      <img id="kissbuttonimage" src="" />
+    </div>
+  </div>
+</div>
+
+<!-- Win State -->
+<div id="win" class="scene" style="position:absolute;" onClick="if (typeof ARIS.cache != "undefined") ARIS.exit()">
+  <img width="100%" style="position:absolute; top:50px; left:0px;" src="assets/hand.png" />
+  <img id="catch" width="50%" style="position:absolute; top:40px; left:70px;" src="" />
+  <div style="color:#FFFFFF; position:absolute; bottom:20px; left:115px;">
+      YOU WIN
+  </div>
+</div>
+
+<!-- Lose State -->    
+<div id="lose" class="scene" onClick="if (typeof ARIS.cache != "undefined") ARIS.exit()">
+  <div style="color:#FFFFFF; position:absolute; top:198px; left:130px; height:20px; width:60px;">
+      YOU LOSE
+  </div>
+</div>
+
+<!-- Fire Bonus -->
+<div id="firebonus" class="bonus" onClick="ARIS.exit()"
+  <img style="position:absolute;" src="assets/fireButton.png" />
+  <div style="color:#FFFFFF; position:absolute; top:99px; left:65px; width:200px;">
+      <b>You have captured enough Aji to unlock their devastating fireball!</b><br /><br />It won't work well on other Aji, but other Kkomamon might be more susceptible to its power...
+  </div>
+</div>
+
+<!-- Awesome Bonus -->
+<div id="awesomebonus" class="bonus" onClick="ARIS.exit()"
+  <img style="position:absolute; bottom:-20px;" src="assets/player.png" />
+  <div style="color:#FFFFFF; position:absolute; top:99px; left:65px; width:200px;">
+    <b>You are AWESOME!</b><br /><br />Prepare to fight the elusive Orbital, and the leviathan YongYong! You must be quick, and strong!
+  <div>
+</div>
+
+</div><!-- body -->
+</body>
+</html>
