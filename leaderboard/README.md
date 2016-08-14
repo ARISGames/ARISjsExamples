@@ -7,3 +7,5 @@ For a specific game, it will display all the users’ current inventory quantity
 
 To configure, modify the game_id and item name in the first few lines of code.
 
+![Screenshot of Leaderboard from the Rupee Collector Game](./README_assets/screenshot.png)
+
