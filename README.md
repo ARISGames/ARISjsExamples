@@ -1,17 +1,9 @@
-ARISjs
+ARISjsExamples
 =================
 
-Use Javascript to interact with the iOS client through this API.
+ARIS has a rich .js API we call ARISjs. ARISjs allows you to create interactive HTML5 content that connects with the client, player and current game being played.
 
-Magic code snippet to copy/paste into text area to enable arisjs:
+This repository is for ARISjs users to post and share code that will help others get up to speed. If you have something to share, please send us a pull request with a new directory containing your project and a REAME.md to explain it’s use.
 
-    <script>
-    var ARIS = {};
-    ARIS.ready = function()
-    {
-        //Put any ARIS commands here
-        //example:
-        //ARIS.givePlayerItemCount(42,1); //gives player 1 qty of item 42
-    }
-    </script>
+Full documentation for ARISjs is available at the ARIS Manual at http://manual.arisgames.org/editor/arisjs
 
