@@ -1,24 +1,50 @@
 <script type='text/javascript'>
-var ARIS = {};
-ARIS.ready = function()
-{
-  var counter_item_name = 'counter_item';
-  var team_a_item_name = 'Team A';
-  var team_b_item_name = 'Team B';
 
+// Hey! Read this please!
+//
+// Any text to the right of a // is a "comment".
+// That is, it won't be interpreted as code, and can be used to explain things.
+// Feel free to delete any/all comments from the code you use (but leaving them in won't cause any harm)
+//
+// DESCRIPTION:
+// This example alternates giving players that encounter this different items.
+// That is, one person will encounter this, and get one item.
+// Then, the next person to encounter it will get another item.
+// (This is a reasonable way to "assign teams" by giving alternating "you're on Team 1" and "you're on Team 2" items).
+//
+// INSTRUCTIONS:
+// You need 3 different items in your ARIS game for this example to work.
+// The first item is used to keep track of which item was given last ('Counter Item').
+// No player will ever see/receive this item- it is instead used as a "Global Item".
+// Then you need the 2 items you'd like to alternate giving ('Team A' and 'Team B').
+// To make this work, just change the lines below that specify the various item names to
+// the exact names of your in-ARIS items.
+// That is, change the text 'Counter Item' to 'My Counter Item Name' (assuming your ARIS item is named as such)
+// Do the same for 'Team A' and 'Team B'
+
+var ARIS = {}; //tells ARIS that we're going to be using ARISjs
+ARIS.ready = function() //specifies what code is to be run when ARIS is ready
+{ //that is, everything between this { and the matching one below will be run
+
+  //CHANGE THESE
+  var counter_item_name = 'Counter Item'; //change 'Counter Item' to the name of your counter item within ARIS
+  var item_a_name = 'Team A'; //change 'Team A' to the name of the first item you'd like to give
+  var item_b_name = 'Team B'; //change 'Team B' to the name of the alternate item you'd like to give
+
+  //these lines find the ARIS ID for each of the items as you've just named
   var counter_item_id = ARIS.cache.idForItemName(counter_item_name);
-  var team_a_item_id  = ARIS.cache.idForItemName(team_a_item_name);
-  var team_b_item_id  = ARIS.cache.idForItemName(team_b_item_name);
+  var item_a_id       = ARIS.cache.idForItemName(item_a_name);
+  var item_b_id       = ARIS.cache.idForItemName(item_b_name);
 
-  var current_qty = ARIS.cache.getGameItemCount(counter_item_id);
+  var current_qty = ARIS.cache.getGameItemCount(counter_item_id); //this finds out the total number of people that have encountered this script
 
-  if(current_qty % 2 == 0) { ARIS.givePlayerItemCount(team_a_item_id,1); }
-  else                     { ARIS.givePlayerItemCount(team_b_item_id,1); }
+  if(current_qty % 2 == 0) { ARIS.givePlayerItemCount(item_a_id,1); } //if that number is even, give the current player the first item
+  else                     { ARIS.givePlayerItemCount(item_b_id,1); } //if odd, give them the alternate item
 
-  ARIS.giveGameItemCount(counter_item_id,1);
-}
+  ARIS.giveGameItemCount(counter_item_id,1); //increment the known number of people to have encountered this script
+} //this is the matching }, specifying the end of what should be run when ARIS is ready
 </script>
-<div id='content' style='width:100%; height:1000px; word-wrap:break-word;'>
+<div id='content'>
 
 Put your text content here!
 
