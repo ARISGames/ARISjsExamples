@@ -7,10 +7,16 @@
 // Feel free to delete any/all comments from the code you use (but leaving them in won't cause any harm)
 //
 // DESCRIPTION:
-// TODO: WRITE DESCRIPTION
+// This example simply assigns a group, and then gives that group an item via javascript.
+// Note: this functionality exists in native ARIS- Just use an Event.
+// The purpose of this example code is to illustrate the group-assigning/giving API
+// around which you might build a more complex shell that justifies the use of JS.
 //
 // INSTRUCTIONS:
-// TODO: WRITE INSTRUCTIONS
+// Update the text 'GroupA' with the name of the in-ARIS group you'd like to assign the player to.
+// Update the group_id value (currently '2' in the example).
+// NOTE: Must be done explicitly, as the functionality to derive id from name is not yet in ARISjs
+// Update the text 'SimpleItem' with the name of the item you'd like to give to the group
 
 var ARIS = {};
 ARIS.ready = function()

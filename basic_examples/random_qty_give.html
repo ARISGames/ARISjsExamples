@@ -7,10 +7,17 @@
 // Feel free to delete any/all comments from the code you use (but leaving them in won't cause any harm)
 //
 // DESCRIPTION:
-// TODO: WRITE DESCRIPTION
+// Gives, takes, or sets a random quantity (between minQty and maxQty) of an item to a player.
+// (defaults to "sets")
 //
 // INSTRUCTIONS:
-// TODO: WRITE INSTRUCTIONS
+// Change the text 'SimpleItem' to the name of the item you'd like to give.
+// Change the 1 after var minQty = to the number representing the minimum you'd like to possibly give/take/set (inclusive)
+// Change the 10 after var maxQty = to the number representing the maximum you'd like to possibly give/take/set (inclusive)
+// If you'd like to "give" this random amount, uncomment the mode = "give" line (that is, delete the preceding //)
+// If you'd like to "take" this random amount, uncomment the mode = "take" line (that is, delete the preceding //)
+// If you'd like to "set" this random amount, uncomment the mode = "set" line (that is, delete the preceding //)
+//
 
 var ARIS = {};
 ARIS.ready = function()
@@ -22,14 +29,23 @@ ARIS.ready = function()
   var item_id = ARIS.cache.idForItemName(item_name);
   var amt = minQty + Math.floor((Math.random()*(maxQty-minQty+1)));
 
-  //give random amount
-  //ARIS.givePlayerItemCount(item_id,amt);
+  var mode;
+  //mode = "give";
+  //mode = "take";
+  //mode = "set";
 
-  //take random amount
-  //ARIS.takePlayerItemCount(item_id,amt);
-
-  //set random amount
-  ARIS.setPlayerItemCount(item_id,amt);
+  if(mode == "give")
+  {
+    ARIS.givePlayerItemCount(item_id,amt); //give random amount
+  }
+  else if(mode == "take")
+  {
+    ARIS.takePlayerItemCount(item_id,amt); //take random amount
+  }
+  else
+  {
+    ARIS.setPlayerItemCount(item_id,amt); //set random amount
+  }
 }
 </script>
 <div id='content'>

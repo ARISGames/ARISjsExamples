@@ -7,10 +7,22 @@
 // Feel free to delete any/all comments from the code you use (but leaving them in won't cause any harm)
 //
 // DESCRIPTION:
-// TODO: WRITE DESCRIPTION
+// Give a random item from a list of possible items.
 //
 // INSTRUCTIONS:
-// TODO: WRITE INSTRUCTIONS
+// Change the text:
+//   'SimpleItemA',
+// to:
+//   'The Name of One of Your Items',
+//
+// (repeat for 'SimpleItemB', etc...)
+//
+// Note that you must retain the ''s on either side of the name of your item, and the trailing ,
+// You can add as many lines as you'd like (as different items from which it randomly chooses)
+// You can also remove any lines (so long as there is at least one)
+//
+// Also, change the 1 to the qty of the randomly chosen item you'd like to give.
+// (If you know some javascript, you might even be able to randomly choose the qty!)
 
 var ARIS = {};
 ARIS.ready = function()
@@ -20,7 +32,7 @@ ARIS.ready = function()
   'SimpleItemA',
   'SimpleItemB',
   'SimpleItemC',
-  'SimpleItemD'
+  'SimpleItemD',
   ];
 
   var i = Math.floor(Math.random()*item_names.length);

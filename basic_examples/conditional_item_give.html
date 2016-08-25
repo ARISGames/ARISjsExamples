@@ -7,10 +7,22 @@
 // Feel free to delete any/all comments from the code you use (but leaving them in won't cause any harm)
 //
 // DESCRIPTION:
-// TODO: WRITE DESCRIPTION
+// This example gives an item if one condition is met, and takes it if the condition is not met.
+// It is unlikely that you'd use this specific example, as many of the values are arbitrary.
+// Some basic understanding of javascript would hopefully render this example more useful.
 //
 // INSTRUCTIONS:
-// TODO: WRITE INSTRUCTIONS
+// Change the text 'SimpleItem' to the name of the in-ARIS item you'd like to conditionally give or take.
+// Currently, the logic is as follows:
+//   If you have less than 5 qty of this item, it will give you 1 qty
+//   Otherwise, it will take 1 qty
+// You can change the '5' below to any threshhold you'd like
+// You can also change the first '1' (which specifies the amount to give assuming the threshhold is not met)
+// and you can change the second '1' (which specifies the amount to take assuming the threshhold is met)
+// But more likely, you'd like to change the whole structure
+// (what is the requirement that dictates whether or not a thing is given or taken?)
+// (how ought ARISjs behave assuming this requirement is met or not?)
+// But this, as stated before, would require some basic knowledge of javascript.
 
 var ARIS = {};
 ARIS.ready = function()
@@ -18,13 +30,14 @@ ARIS.ready = function()
   var item_name = 'SimpleItem';
   var item_id = ARIS.cache.idForItemName(item_name);
   var current_qty = ARIS.cache.getPlayerItemCount(item_id);
-  if(current_qty < 5)
+
+  if(current_qty < 5) //the condition- "is current qty < 5?"
   {
-    ARIS.givePlayerItemCount(item_id,1);
+    ARIS.givePlayerItemCount(item_id,1); //if the condition is met, do this
   }
   else
   {
-    ARIS.takePlayerItemCount(item_id,1);
+    ARIS.takePlayerItemCount(item_id,1); //otherwise, do this
   }
 }
 </script>

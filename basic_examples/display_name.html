@@ -7,10 +7,43 @@
 // Feel free to delete any/all comments from the code you use (but leaving them in won't cause any harm)
 //
 // DESCRIPTION:
-// TODO: WRITE DESCRIPTION
+// This example displays some info about the player.
+// You might use this to reference the player by name (or show them their player_id, etc...)
+// Basic knowledge of string concatenation in javascript may be required for this example to be useful.
 //
 // INSTRUCTIONS:
-// TODO: WRITE INSTRUCTIONS
+// The line with "Player's id:"... sets the text that will appear to the user.
+// You are free to alter this to make it say whatever you'd like-
+// but you need to conform to javascript's string concatenation rules.
+//
+// Some quick examples (note that this will replace the right of the = on the line starting with player_info_el.innerHTML =):
+// To simply explicitly define the text to be shown, you can write:
+//
+// "Hello! This text will be shown.";
+//
+// (note the quotes surrounding the text, and the semicolon at the end)
+// This will display as:
+//
+// Hello! This text will be shown.
+//
+// You can concatenate (combine) strings (quote-surrounded bits of text) with a +
+// If you write:
+//
+// "Hello!" + "This text will be shown.";
+//
+// This will display as:
+//
+// Hello!This text will be shown.
+//
+// (note the lack of a space between Hello! and This- any characters you want in the final text must be within the quotes)
+// Finally, you can also concatenate variables (here, we have user_name, display_name, and user_id).
+// If you type:
+//
+// "Hello, " + display_name + "! Or should I call you " + user_name +"?";
+//
+// It will display (assuming the user's display name is Fred and their user name is ARISGamer123):
+//
+// Hello, Fred! Or should I call you ARISGamer123?
 
 var ARIS = {};
 ARIS.ready = function()
@@ -19,7 +52,8 @@ ARIS.ready = function()
   var user_name = ARIS.cache.player.user_name;
   var display_name = ARIS.cache.player.display_name;
   var player_info_el = document.getElementById('player_info');
-  player_info_el.innerHTML = "Player's id:"+user_id+"<br />Player's name:"+user_name;
+  //replace the text below to the right of the =
+  player_info_el.innerHTML = "Player's id:" + user_id + "<br />Player's name:" + user_name;
 }
 </script>
 <div id='content'>
