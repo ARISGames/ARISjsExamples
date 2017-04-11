@@ -1,0 +1,68 @@
+<script type="text/javascript">
+
+var item_name = "Quarter";
+var item_id = 0;
+var item_qty = 0;
+var tag;
+
+var heads_src = "http://arisgames.org/server/gamedatav2/27222/arisc599335f5ebf9763cffcf2bff0740593_128.png";
+var tails_src = "http://arisgames.org/server/gamedatav2/27222/aris4c6a2270a82a5fa6b0a382078d7c83c4_128.png";
+
+var quarter_img;
+ 
+var is_heads = 0;
+var remaining_toggles = 0;
+
+var toggle = function()
+{
+  is_heads = !is_heads;
+  if(is_heads) quarter_img.src = heads_src;
+  else         quarter_img.src = tails_src;
+}
+
+var flip = function()
+{
+  if(remaining_toggles != 0) return;
+  remaining_toggles = Math.floor(10+Math.random()*10);
+  resumeFlip();
+}
+var resumeFlip = function()
+{
+  toggle();
+  remaining_toggles--;
+  if(remaining_toggles > 0)
+    setTimeout(resumeFlip,(20-remaining_toggles)*20);
+  else
+    resolve();
+}
+var resolve = function()
+{
+  if(is_heads)
+  {
+    ARIS.givePlayerItemCount(item_id,1);
+    item_qty++;
+  }
+  tag.innerHTML = item_qty;
+}
+
+var ARIS = {};
+ARIS.ready = function()
+{
+  item_id = ARIS.cache.idForItemName(item_name);
+  item_qty = ARIS.cache.getPlayerItemCount(item_id);
+  tag = document.getElementById("qty");
+  quarter_img = document.getElementById("quarter");
+  quarter_img.src = tails_src;
+
+  resolve();
+}
+
+</script>
+<div style="height:300px;">
+Click the quarter to flip. If it lands heads, you get a quarter!
+<div>
+<img id="quarter" src="" width="100px" onclick="flip()"/>
+</div>
+You have <span id="qty"></span> quarters!
+</div>
+
