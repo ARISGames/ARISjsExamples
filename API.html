@@ -1,0 +1,126 @@
+Here is a list of API calls and their descriptions
+
+API
+
+ARIS.logOut()
+//Description: Immediately logs the current user out of ARIS
+
+ARIS.exit()
+//Description: Closes whatever instance is currently on screen (closes a plaque, dialog, etc...)
+
+ARIS.exitToTab(tab)
+//Description: Closes whatever instance is currently on screen, and selects the tab specified by `tab`
+//Arguments:
+//  tab: a string representing the tab you want to exit to
+//    example: "MAP"
+
+ARIS.exitToScanner(prompt)
+//Description: Closes whatever instance is currently on screen, and selects the "Scanner" tab with `prompt` displayed on screen
+//Arguments:
+//  prompt: a string that will be displayed overlaying the scanner
+//    example: "Go find a QR Code in the Kitchen!"
+
+ARIS.exitToPlaque(plaque_id)
+//Description: Closes whatever instance is currently on screen, and pops up an instance of a plaque identified by `plaque_id`
+//Arguments:
+//  plaque_id: a number representing the plaque you'd like to display
+//    example: 51295 (find the ID for the plaque in the editor)
+
+ARIS.exitToWebpage(webpage_id)
+//Description: Closes whatever instance is currently on screen, and pops up an instance of a webpage identified by `webpage_id`
+//Arguments:
+//  webpage_id: a number representing the webpage you'd like to display
+//    example: 51295 (find the ID for the webpage in the editor)
+
+ARIS.exitToItem(item_id)
+//Description: Closes whatever instance is currently on screen, and pops up an instance of a item identified by `item_id`
+//Arguments:
+//  item_id: a number representing the item you'd like to display
+//    example: 51295 (find the ID for the item in the editor)
+
+ARIS.exitToDialog(dialog_id)
+//Description: Closes whatever instance is currently on screen, and pops up an instance of a dialog identified by `dialog_id`
+//Arguments:
+//  dialog_id: a number representing the dialog you'd like to display
+//    example: 51295 (find the ID for the dialog in the editor)
+
+ARIS.exitGame()
+//Description: Exits the game
+
+ARIS.getPlayerItemCount(item_id)
+//Description: requests ARIS to call the function `ARIS.didUpdatePlayerItemQty(item_id, qty)` with the most up-to-date count of the player's item qty. (See "callbacks")
+//Arguments:
+//  item_id: a number representing the item you'd like to know the qty of
+//    example: 51295 (find the ID for the item in the editor)
+
+ARIS.setPlayerItemCount(item_id,qty)
+//Description: sets the quantity of the item specified by `item_id` to `qty` for the player
+//Arguments:
+//  item_id: a number representing the item you'd like to set the qty of
+//    example: 51295 (find the ID for the item in the editor)
+//  qty: the number to set in the players inventory. (Note- qty will be clamped to the max quantity of the item as set in the ARIS editor)
+//    example: 5
+
+ARIS.givePlayerItemCount(item_id,qty)
+//Description: gives an additional quantity of the item specified by `item_id` for the player
+//Arguments:
+//  item_id: a number representing the item you'd like to give the qty of
+//    example: 51295 (find the ID for the item in the editor)
+//  qty: the number to add in the players inventory. (Note- the new qty will be clamped to the max quantity of the item as set in the ARIS editor)
+//    example: 5
+
+ARIS.takePlayerItemCount(item_id,qty)
+//Description: takes an additional quantity of the item specified by `item_id` from the player
+//Arguments:
+//  item_id: a number representing the item you'd like to take the qty of
+//    example: 51295 (find the ID for the item in the editor)
+//  qty: the number to remove in the players inventory. (Note- the new qty will be clamped to no less than 0)
+//    example: 5
+
+ARIS.setScene(scene_id)
+//Description: immediately sets the current scene to `scene_id`
+//Arguments:
+//  scene_id: a number representing the scene you'd like to set for the player
+//    example: 51295 (find the ID for the scene in the editor)
+
+
+Callbacks
+These are functions you can define in your javscript that ARIS will call externally
+
+ARIS.didUpdatePlayerItemQty(updatedItemId,qty)
+//Description: if defined in your javascript, ARIS will call this function to let you know of the result of any item transactions (For example, if you say "give 5", it will call this function with the new qty so you can see if in fact 5 were given, or the newly set qty was clamped to maxQuantity)
+//Arguments:
+//  updatedItemId: the id of the item for which there is new information
+//    example: 51295 (find the ID for the item in the editor)
+//  qty: the most up-to-date quantity of the item_id specified
+//    example: 5
+
+ARIS.ready()
+//Description: if defined in your javascript, ARIS will call this function as soon as the ARIS->webview->js pipeline has been fully established and is ready to go.
+
+
+Cache
+This is a pre-populated object of various id/name associations, and other quick info that might be helpful
+
+ARIS.cache.idForItemName(item_name)
+//Description: returns the item_id (number) for the name (string) of the item. easier to deal with than constantly looking back to the editor for ids.
+//Arguments:
+//  item_name: a string representing the name of the item for which you'd like the ID
+//    example: "Coins"
+
+ARIS.cache.getPlayerItemCount(item_id)
+//Description: gets the qty in the players inventory of the item specified by `item_id` *at the time of opening this ARISjs window*. (Note- any changes that occur after the window is open will *not* be reflected in this number)
+//Arguments:
+//  item_id: the id of the item for which you want the cached inventory quantity
+//    example: 51295 (find the ID for the item in the editor, or via ARIS.cache.idForItemName)
+
+ARIS.cache.player.user_name
+//Description: The string that is the user name of the player (Note: *Not* a function. Just a property)
+//  example: "IlovePokemon123"
+ARIS.cache.player.display_name
+//Description: The string that is the display name of the player (Note: *Not* a function. Just a property)
+//  example: "Phil"
+ARIS.cache.player.photoURL
+//Description: The string that is a URL for the player's image (Note: *Not* a function. Just a property)
+//  example: "http://arisgames.org/images/blahblah.png"
+
