@@ -39,8 +39,8 @@ var resolve = function()
 {
   if(is_heads)
   {
-    ARIS.givePlayerItemCount(item_id,1);
     item_qty++;
+    ARIS.setPlayerItemCount(item_id,item_qty);
   }
   tag.innerHTML = item_qty;
 }
