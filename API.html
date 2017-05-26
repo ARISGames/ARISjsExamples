@@ -20,6 +20,11 @@ ARIS.exitToScanner(prompt)
 //  prompt: a string that will be displayed overlaying the scanner
 //    example: "Go find a QR Code in the Kitchen!"
 
+ARIS.exitToAugmented({media_id: overlay_media_id})
+//Description: Closes whatever instance is currently on screen, and selects the "Augmented" tab
+//Arguments:
+//  overlay_media_id: a media ID for an image that will be displayed on top of the AR view (aspect fill)
+
 ARIS.exitToPlaque(plaque_id)
 //Description: Closes whatever instance is currently on screen, and pops up an instance of a plaque identified by `plaque_id`
 //Arguments:

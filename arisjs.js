@@ -7,7 +7,7 @@ in your script.
 This is just a copy of exactly what ARIS will inject for those
 looking to see what ARIS is doing behind the scenes.
 
-Last updated Apr 11 2017 - Phil
+Last updated May 26 2017 - Mike
 */
 
 var ARISJS = function(_ARIS)
@@ -59,8 +59,12 @@ var ARISJS = function(_ARIS)
     _ARIS.exit                = function()                 { _ARIS.enqueueRequest("aris://exit"); }
     _ARIS.exitToTab           = function(tab)              { _ARIS.enqueueRequest("aris://exit/tab/"+tab); }
     _ARIS.exitToScanner       = function(prompt)           { _ARIS.enqueueRequest("aris://exit/scanner/"+prompt); }
+    _ARIS.exitToAugmented     = function(options)          {
+      if (options == null) options = {};
+      _ARIS.enqueueRequest("aris://exit/augmented/"+(options.media_id || 0));
+    }
     _ARIS.exitToPlaque        = function(plaque_id)        { _ARIS.enqueueRequest("aris://exit/plaque/"+plaque_id); }
-    _ARIS.exitToWebpage       = function(webpage_id)       { _ARIS.enqueueRequest("aris://exit/webpage/"+webpage_id); }
+    _ARIS.exitToWebpage       = function(webpageId)        { _ARIS.enqueueRequest("aris://exit/webpage/"+webpageId); }
     _ARIS.exitToItem          = function(item_id)          { _ARIS.enqueueRequest("aris://exit/item/"+item_id); }
     _ARIS.exitToDialog        = function(dialog_id)        { _ARIS.enqueueRequest("aris://exit/character/"+dialog_id); }
     _ARIS.exitGame            = function()                 { _ARIS.enqueueRequest("aris://exit/game/"); }
@@ -164,18 +168,18 @@ var ARISJS = function(_ARIS)
       _ARIS.cache.preload = function() {
         _ARIS.enqueueRequest("aris://cache/preload");
       };
-
+      
       _ARIS.cache.idForItemName = function(item_name) { if(name_map[item_name] === 'undefined') return 0; return name_map[item_name]; }
-
+      
       _ARIS.cache.getPlayerItemCount = function(item_id) { if(typeof(cache_player[item_id]) === 'undefined') return 0; return cache_player[item_id]; }
       _ARIS.cache.getGameItemCount   = function(item_id) { if(typeof(cache_game[item_id]) === 'undefined')   return 0; return cache_game[item_id]; }
       _ARIS.cache.getGroupItemCount  = function(item_id) { if(typeof(cache_group[item_id]) === 'undefined')  return 0; return cache_group[item_id]; }
-
+      
       _ARIS.cache.setItemName   = function(item_id, name) { name_map[name] = item_id; }
       _ARIS.cache.setPlayerItem = function(item_id, qty)  { cache_player[item_id] = qty; }
       _ARIS.cache.setGameItem   = function(item_id, qty)  { cache_game[item_id]   = qty; }
       _ARIS.cache.setGroupItem  = function(item_id, qty)  { cache_group[item_id]  = qty; }
-
+      
       _ARIS.cache.setPlayer = function(player)
       {
         _ARIS.cache.player = player;
@@ -183,7 +187,7 @@ var ARISJS = function(_ARIS)
         _ARIS.cache.player.auth.user_id = _ARIS.cache.player.user_id;
         _ARIS.cache.player.auth.key = _ARIS.cache.player.key;
       };
-
+      
       _ARIS.cache.detach = function()
       {
         _ARIS.cache.setItemName = undefined;
@@ -195,12 +199,12 @@ var ARISJS = function(_ARIS)
 
       _ARIS.cache.wholeCache = function() { return {"player":cache_player,"game":cache_game,"group":cache_group}; } //FOR DEBUGGING
     }
-
+  
     /*
      * ARIS DEBUG LOG FUNCTIONS
      */
     var debugLog = function(str) { }
-
+  
     var log_enabled = (typeof(_ARIS.debugLogEnabled) !== 'undefined' && _ARIS.debugLogEnabled);
     if(log_enabled)
     {
@@ -214,7 +218,7 @@ var ARISJS = function(_ARIS)
       debug.style.pointerEvents = "none";
       debug.style.wordWrap = "break-word";
       document.body.appendChild(debug);
-
+      
       debugLog = function(str)
       {
         console.log(str);
